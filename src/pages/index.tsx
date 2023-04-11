@@ -8,9 +8,10 @@ import { SignInButton } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   const user = useUser();
+
+  const { data } = api.clients.getAll.useQuery();
 
   return (
     <>
@@ -20,9 +21,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        {!user.isSignedIn ? <p>Sign In</p> : <p>Sign Out</p>}
         {!user.isSignedIn ? <SignInButton /> : <SignOutButton />}
         <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+        <div>
+          {data?.map((client) => (<div key={client.id}>{client.name}</div>))}
+        </div>
       </main>
     </>
   );
