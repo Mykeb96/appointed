@@ -11,7 +11,11 @@ const Home: NextPage = () => {
 
   const user = useUser();
 
-  const { data } = api.clients.getAll.useQuery();
+  const { data, isLoading } = api.clients.getAll.useQuery();
+
+  if (isLoading) return <div>Loading...</div>
+
+  if (!data) return <div>Something went wrong</div>
 
   return (
     <>
@@ -21,10 +25,24 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        {!user.isSignedIn ? <SignInButton /> : <SignOutButton />}
+      {!user.isSignedIn ? <SignInButton /> : <SignOutButton />}
+        <div>
+          <h2>Add new client</h2>
+          <form style={{display: 'flex', flexDirection: 'column'}}>
+            <label />Name:
+            <input />
+            <label />Phone:
+            <input />
+            <label />Email:
+            <input />
+            <label />Notes:
+            <input />
+          </form>
+        </div>
         <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
         <div>
-          {data?.map((client) => (<div key={client.id}>{client.name}</div>))}
+          <h2 style={{textDecoration: 'underline dotted', marginTop: '55px'}}>Clients</h2>
+          {data?.map((client) => (<div style={{textAlign: 'center'}} key={client.id}>{client.name}</div>))}
         </div>
       </main>
     </>
