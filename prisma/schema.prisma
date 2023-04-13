@@ -20,4 +20,5 @@ model Client {
     phone String
     email String
     notes String
+    clientOf String
 }

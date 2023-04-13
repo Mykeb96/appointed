@@ -27,7 +27,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
       {!user.isSignedIn ? <SignInButton /> : <SignOutButton />}
         <div>
-          <h2>Add new client</h2>
+          <h2 style={{textAlign: 'center'}}>Add new client</h2>
           <form style={{display: 'flex', flexDirection: 'column'}}>
             <label />Name:
             <input />
@@ -41,8 +41,8 @@ const Home: NextPage = () => {
         </div>
         <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
         <div>
-          <h2 style={{textDecoration: 'underline dotted', marginTop: '55px'}}>Clients</h2>
-          {data?.map((client) => (<div style={{textAlign: 'center'}} key={client.id}>{client.name}</div>))}
+          <h2 style={{textDecoration: 'underline dotted', marginTop: '55px', textAlign: 'center'}}>Clients</h2>
+          {data?.map(({client, clientOf}) => (<div style={{textAlign: 'center'}} key={client.id}>"{client.name}" client of: {clientOf?.username}</div>))}
         </div>
       </main>
     </>
