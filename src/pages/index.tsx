@@ -42,7 +42,7 @@ const Home: NextPage = () => {
         <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
         <div>
           <h2 style={{textDecoration: 'underline dotted', marginTop: '55px', textAlign: 'center'}}>Clients</h2>
-          {data?.map(({client, clientOf}) => (<div style={{textAlign: 'center'}} key={client.id}>"{client.name}" client of: {clientOf?.username}</div>))}
+          {data?.map(({client, clientOf}) => (<div style={{textAlign: 'center'}} key={client.id}>{client.name} client of: {clientOf?.username}</div>))}
         </div>
       </main>
     </>
