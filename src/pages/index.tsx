@@ -4,12 +4,28 @@ import Head from "next/head";
 import Link from "next/link";
 import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
+import { useState } from 'react'
 
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
 
   const user = useUser();
+  console.log(user)
+
+  const router = useRouter()
+
+  const initialInput = {
+    name: '',
+    phone: '',
+    email: '',
+    notes: ''
+  }
+
+  const { mutate, isLoading: isAddingUser } = api.clients.create.useMutation()
+
+  const [input, setInput] = useState(initialInput)
 
   const { data, isLoading } = api.clients.getAll.useQuery();
 
@@ -28,21 +44,28 @@ const Home: NextPage = () => {
       {!user.isSignedIn ? <SignInButton /> : <SignOutButton />}
         <div>
           <h2 style={{textAlign: 'center'}}>Add new client</h2>
-          <form style={{display: 'flex', flexDirection: 'column'}}>
+          <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={(e) => {
+            e.preventDefault()
+            mutate({ name: input.name, phone: input.phone, email: input.email, notes: input.notes})
+            setInput(initialInput)
+            router.reload()
+          }}>
             <label />Name:
-            <input />
+            <input onChange={(e) => setInput({...input, name: e.target.value})}/>
             <label />Phone:
-            <input />
+            <input onChange={(e) => setInput({...input, phone: e.target.value})} />
             <label />Email:
-            <input />
+            <input onChange={(e) => setInput({...input, email: e.target.value})} />
             <label />Notes:
-            <input />
+            <input onChange={(e) => setInput({...input, notes: e.target.value})} />
+            <button disabled={isAddingUser} style={{width: '50%', margin: '5px auto 0px auto'}}>Submit</button>
           </form>
         </div>
         <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
-        <div>
-          <h2 style={{textDecoration: 'underline dotted', marginTop: '55px', textAlign: 'center'}}>Clients</h2>
-          {data?.map(({client, clientOf}) => (<div style={{textAlign: 'center'}} key={client.id}>{client.name} client of: {clientOf?.username}</div>))}
+        <h2 style={{textDecoration: 'underline dotted', marginTop: '55px', textAlign: 'center'}}>Clients</h2>
+
+        <div style={{height: '500px', overflowY: 'scroll'}}>
+          {data.map(({client, clientOf}) => (<div style={{textAlign: 'center', display: 'flex', alignItems: 'center'}} key={client.id}>{client.name} client of: {clientOf?.username} {user?.user?.username == clientOf.username ? <p style={{marginLeft: '15px', color: 'red'}}>X</p> : null}</div>))}
         </div>
       </main>
     </>

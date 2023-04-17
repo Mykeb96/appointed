@@ -1,9 +1,10 @@
 import type { User } from '@clerk/nextjs/dist/api'
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from '@trpc/server';
+import { create } from 'domain';
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 const filterUserForClient = (user: User) => {
   return {
@@ -15,7 +16,11 @@ const filterUserForClient = (user: User) => {
 export const clientsRouter = createTRPCRouter({
  
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const clients = await ctx.prisma.client.findMany();
+    const clients = await ctx.prisma.client.findMany({
+      orderBy: {
+        name: 'asc'
+      }
+    });
 
     const users = (await clerkClient.users.getUserList({
       userId: clients.map((client) => client.clientOf)
@@ -39,6 +44,27 @@ export const clientsRouter = createTRPCRouter({
 
     })
 
+  }),
+
+  create: privateProcedure.input(z.object({
+    name: z.string().min(2),
+    phone: z.string().length(10),
+    email: z.string().email(),
+    notes: z.string()
+  })).mutation(async ({ ctx, input }) => {
+    const clientOf = ctx.userId
+
+    const client = await ctx.prisma.client.create({
+      data: {
+        clientOf,
+        name: input.name,
+        phone: input.phone,
+        email: input.email,
+        notes: input.notes
+      }
+    })
+
+    return client
   })
 
 });
