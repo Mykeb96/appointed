@@ -12,7 +12,8 @@ import { useRouter } from "next/router";
 const Home: NextPage = () => {
 
   const user = useUser();
-  console.log(user)
+
+  const ctx = api.useContext()
 
   const router = useRouter()
 
@@ -23,7 +24,12 @@ const Home: NextPage = () => {
     notes: ''
   }
 
-  const { mutate, isLoading: isAddingUser } = api.clients.create.useMutation()
+  const { mutate, isLoading: isAddingUser } = api.clients.create.useMutation({
+    onSuccess: () => {
+      setInput(initialInput)
+      void ctx.clients.getAll.invalidate()
+    }
+  })
 
   const [input, setInput] = useState(initialInput)
 
@@ -44,22 +50,22 @@ const Home: NextPage = () => {
       {!user.isSignedIn ? <SignInButton /> : <SignOutButton />}
         <div>
           <h2 style={{textAlign: 'center'}}>Add new client</h2>
-          <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={(e) => {
-            e.preventDefault()
-            mutate({ name: input.name, phone: input.phone, email: input.email, notes: input.notes})
-            setInput(initialInput)
-            router.reload()
-          }}>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
             <label />Name:
-            <input onChange={(e) => setInput({...input, name: e.target.value})}/>
+            <input value={input.name} onChange={(e) => setInput({...input, name: e.target.value})}/>
             <label />Phone:
-            <input onChange={(e) => setInput({...input, phone: e.target.value})} />
+            <input value={input.phone} onChange={(e) => setInput({...input, phone: e.target.value})} />
             <label />Email:
-            <input onChange={(e) => setInput({...input, email: e.target.value})} />
+            <input value={input.email} onChange={(e) => setInput({...input, email: e.target.value})} />
             <label />Notes:
-            <input onChange={(e) => setInput({...input, notes: e.target.value})} />
-            <button disabled={isAddingUser} style={{width: '50%', margin: '5px auto 0px auto'}}>Submit</button>
-          </form>
+            <input value={input.notes} onChange={(e) => setInput({...input, notes: e.target.value})} />
+            <button disabled={isAddingUser} style={{width: '50%', margin: '5px auto 0px auto'}} onClick={() => {
+            mutate({ name: input.name, 
+              phone: input.phone, 
+              email: input.email, 
+              notes: input.notes})
+          }}>Submit</button>
+          </div>
         </div>
         <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
         <h2 style={{textDecoration: 'underline dotted', marginTop: '55px', textAlign: 'center'}}>Clients</h2>
