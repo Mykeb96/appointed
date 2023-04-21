@@ -1,6 +1,11 @@
 .main{
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.authButton{
+  position: absolute;
+  top: 0;
+  left: 0;
 }
