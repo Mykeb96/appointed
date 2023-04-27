@@ -105,7 +105,7 @@ const Home: NextPage = () => {
             <label />Notes &#40;Optional&#41;:
             <textarea style={{resize: 'none'}} rows={10} value={input.notes} onChange={(e) => setInput({...input, notes: e.target.value})} />
             <button disabled={isAddingUser} style={{width: '50%', margin: '5px auto 0px auto'}} onClick={() => {
-              let upperCaseName = `${input.name.charAt(0).toUpperCase()}${input.name.substring(1)}`
+              const upperCaseName = `${input.name.charAt(0).toUpperCase()}${input.name.substring(1)}`
             mutate({ name: upperCaseName, 
               phone: input.phone, 
               email: input.email, 
