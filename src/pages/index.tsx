@@ -29,7 +29,7 @@ const Home: NextPage = () => {
     notes: ''
   }
 
-  const testErrors = {
+  const newErrors = {
     name: '',
     phone: '',
     email: '',
@@ -44,28 +44,34 @@ const Home: NextPage = () => {
       setInput(initialInput)
       setErrors(initialErrors)
       void ctx.clients.getAll.invalidate()
+      toast.success("Successfully added new client!")
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
       if (e.data?.zodError?.fieldErrors.name && e.data?.zodError?.fieldErrors.name[0]){
-        // testErrors.name = e.data?.zodError?.fieldErrors.name[0]
-        testErrors.name = 'Name must contain at least 2 character(s)'
+        newErrors.name = 'Name must contain at least 2 character(s)'
       } else{
-        testErrors.name = ''
+        newErrors.name = ''
       }
       if (e.data?.zodError?.fieldErrors.phone && e.data?.zodError?.fieldErrors.phone[0]){
-        // testErrors.phone = e.data?.zodError?.fieldErrors.phone[0]
-        testErrors.phone = 'Phone # must contain exactly 10 character(s)'
+        newErrors.phone = 'Phone # must contain exactly 10 character(s)'
       } else{
-        testErrors.phone = ''
+        newErrors.phone = ''
       }
       if (e.data?.zodError?.fieldErrors.email && e.data?.zodError?.fieldErrors.email[0]){
-        testErrors.email = e.data?.zodError?.fieldErrors.email[0]
+        newErrors.email = e.data?.zodError?.fieldErrors.email[0]
       } else{
-        testErrors.email = ''
+        newErrors.email = ''
       }
-      setErrors(testErrors)
+      setErrors(newErrors)
       toast.error("Failed to add client")
+    }
+  })
+
+  const { mutate: deleteMutate } = api.clients.delete.useMutation({
+    onSuccess: () => {
+      void ctx.clients.getAll.invalidate()
+      toast.success("Successfully deleted client!")
     }
   })
 
@@ -74,8 +80,6 @@ const Home: NextPage = () => {
   if (isLoading) return <div>Loading...</div>
 
   if (!data) return <div>Something went wrong</div>
-
-  console.log(errors)
 
   return (
     <>
@@ -91,15 +95,15 @@ const Home: NextPage = () => {
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <label />Name:
             <input value={input.name} onChange={(e) => setInput({...input, name: e.target.value})}/>
-            {errors.name ? <p style={{color: 'red', marginBottom: '25px'}}>{errors.name}</p> : null}
+            {errors.name ? <span style={{color: 'red', marginBottom: '10px'}}>{errors.name}</span> : <p></p>}
             <label />Phone:
             <input value={input.phone} onChange={(e) => setInput({...input, phone: e.target.value})} />
-            {errors.phone ? <p style={{color: 'red', marginBottom: '25px'}}>{errors.phone}</p> : null}
+            {errors.phone ? <span style={{color: 'red', marginBottom: '10px'}}>{errors.phone}</span> : <p></p>}
             <label />Email:
             <input value={input.email} onChange={(e) => setInput({...input, email: e.target.value})} />
-            {errors.email ? <p style={{color: 'red', marginBottom: '25px'}}>{errors.email}</p> : null}
+            {errors.email ? <span style={{color: 'red', marginBottom: '10px'}}>{errors.email}</span> : <p></p>}
             <label />Notes &#40;Optional&#41;:
-            <input value={input.notes} onChange={(e) => setInput({...input, notes: e.target.value})} />
+            <textarea style={{resize: 'none'}} rows={10} value={input.notes} onChange={(e) => setInput({...input, notes: e.target.value})} />
             <button disabled={isAddingUser} style={{width: '50%', margin: '5px auto 0px auto'}} onClick={() => {
               let upperCaseName = `${input.name.charAt(0).toUpperCase()}${input.name.substring(1)}`
             mutate({ name: upperCaseName, 
@@ -109,12 +113,11 @@ const Home: NextPage = () => {
           }}>Submit</button>
           </div>
         </div>
-        {/* <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" /> */}
         <div style={{display: 'flex', flexDirection: 'column', marginLeft: '100px'}}>
           <h2 style={{textDecoration: 'underline dotted', marginTop: '55px', textAlign: 'center'}}>Clients</h2>
 
           <div style={{height: '500px', overflowY: 'scroll'}}>
-            {data.map(({client, clientOf}) => (<div style={{textAlign: 'center', display: 'flex', alignItems: 'center', height: '50px', paddingRight: '20px'}} key={client.id}>{client.name} client of: {clientOf?.username} {user?.user?.username == clientOf.username ? <p style={{marginLeft: '15px', color: 'red'}}>X</p> : null}</div>))}
+            {data.map(({client, clientOf}) => (<div style={{textAlign: 'center', display: 'flex', alignItems: 'center', height: '50px', paddingRight: '20px'}} key={client.id}>{client.name} client of: {clientOf?.username} {user?.user?.username == clientOf.username ? <p onClick={() => deleteMutate(client.id)} style={{marginLeft: '15px', color: 'red'}}>X</p> : null}</div>))}
           </div>
         </div>
       </main>

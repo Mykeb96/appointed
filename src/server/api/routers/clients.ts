@@ -65,6 +65,22 @@ export const clientsRouter = createTRPCRouter({
     })
 
     return client
+  }),
+
+  delete: privateProcedure.input(z.string()).mutation(async ({ctx, input}) => {
+    const deleteUser = await ctx.prisma.client.delete({
+      where: {
+        id: input
+      }
+    })
   })
+
+  // delete: privateProcedure.query(async ({ctx}) => {
+  //   const deleteUser = await ctx.prisma.client.delete({
+  //     where: {
+  //       id: 'clgydmubw0002rml0xek4i2xo'
+  //     }
+  //   })
+  // })
 
 });
