@@ -4,7 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
-import { FunctionComponent, ReactPropTypes, useState } from 'react'
+import { FunctionComponent, ReactPropTypes, useState, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
@@ -24,27 +24,64 @@ interface modalProps{
 const Modal = (props: modalProps) => {
 
   const { selectedClient, setModalOpen }: modalProps = props
-
+  const [currentEdit, setCurrentEdit] = useState('')
+  
   return (
     <div className={styles.modal_container}>
       <div className={styles.inner_modal}>
           <p onClick={() => setModalOpen(false)} className={styles.close_modal}>X</p>
-          <div className={styles.modal_info_slice}>
-            <p>First Name - </p>
-            <p>{selectedClient.firstName}</p>
-          </div>
-          <div className={styles.modal_info_slice}>
-            <p>Last Name - </p>
-            <p>{selectedClient.lastName}</p>
-          </div>
+          {currentEdit == 'firstName' ? 
+            <div className={styles.modal_info_slice}>
+              <p>First Name - </p>
+              <input placeholder={selectedClient.firstName} autoFocus={true}/>
+              <p className={styles.modal_info_save}>save</p>
+              <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+            </div>
+          :
+            <div className={styles.modal_info_slice}>
+              <p>First Name - </p>
+              <p onClick={() => setCurrentEdit('firstName')}>{selectedClient.firstName}</p>
+            </div>
+          }
+          {currentEdit == 'lastName' ? 
+            <div className={styles.modal_info_slice}>
+              <p>Last Name - </p>
+              <input placeholder={selectedClient.lastName} autoFocus={true}/>
+              <p className={styles.modal_info_save}>save</p>
+              <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+            </div>
+          :
+            <div className={styles.modal_info_slice}>
+              <p>Last Name - </p>
+              <p onClick={() => setCurrentEdit('lastName')}>{selectedClient.lastName}</p>
+            </div>
+          }
+          {currentEdit == 'phone' ? 
           <div className={styles.modal_info_slice}>
             <p>Phone # - </p>
-            <p>{selectedClient.phone}</p>
+            <input placeholder={selectedClient.phone} autoFocus={true}/>
+            <p className={styles.modal_info_save}>save</p>
+            <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
           </div>
+        :
           <div className={styles.modal_info_slice}>
-            <p>Email - </p>
-            <p>{selectedClient.email}</p>
+            <p>Phone # - </p>
+            <p onClick={() => setCurrentEdit('phone')}>{selectedClient.phone}</p>
           </div>
+        }
+        {currentEdit == 'email' ? 
+        <div className={styles.modal_info_slice}>
+          <p>Email - </p>
+          <input placeholder={selectedClient.email} autoFocus={true}/>
+          <p className={styles.modal_info_save}>save</p>
+          <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+        </div>
+      :
+        <div className={styles.modal_info_slice}>
+          <p>Email - </p>
+          <p onClick={() => setCurrentEdit('email')}>{selectedClient.email}</p>
+        </div>
+      }
           <p>Notes: {selectedClient.notes == '' ? <p>N/A</p> : selectedClient.notes}</p>
           <button onClick={() => setModalOpen(false)}>Close</button>
       </div>

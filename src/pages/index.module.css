@@ -82,7 +82,33 @@
 }
 
 .modal_info_slice > :nth-child(2):hover{
+  color: blue;
+  border: 1px solid blue;
+  cursor: pointer;
+}
+
+.modal_info_save{
+  border: 1px solid black;
+  padding: 2px 8px 2px 8px;
+  margin-left: 10px;
+  border-radius: 4px;
+}
+
+.modal_info_save:hover{
   color: limegreen;
   border: 1px solid limegreen;
+  cursor: pointer;
+}
+
+.modal_info_cancel{
+  border: 1px solid black;
+  padding: 2px 6px 2px 8px;
+  margin-left: 10px;
+  border-radius: 4px;
+}
+
+.modal_info_cancel:hover{
+  color: red;
+  border: 1px solid red;
   cursor: pointer;
 }
