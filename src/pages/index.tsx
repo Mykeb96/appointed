@@ -4,7 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
-import { FunctionComponent, ReactPropTypes, useState, useEffect } from 'react'
+import { FunctionComponent, ReactPropTypes, useState, useEffect, Dispatch } from 'react'
 import { toast } from 'react-hot-toast'
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
@@ -16,15 +16,121 @@ interface modalProps{
       lastName: string,
       phone: string,
       email: string,
-      notes: string
+      notes: string,
+      id: string
   },
-  setModalOpen: (modal: boolean) => void
+  setModalOpen: (modal: boolean) => void,
+  setSelectedClient: (Dispatch<SetStateAction<{
+    firstName: string,
+    lastName: string,
+    phone: string,
+    email: string,
+    notes: string,
+    id: string
+  }>>)
 }
 
 const Modal = (props: modalProps) => {
 
-  const { selectedClient, setModalOpen }: modalProps = props
+  const ctx = api.useContext()
+
+  const { mutate: firstNameMutate } = api.clients.updateFirstName.useMutation({
+    onSuccess: () => {
+      setSelectedClient({
+        firstName: updatedValue,
+        lastName: selectedClient.lastName,
+        phone: selectedClient.phone,
+        email: selectedClient.email,
+        notes: selectedClient.notes,
+        id: selectedClient.id
+      })
+      
+      setUpdatedValue('')
+      setCurrentEdit('')
+      void ctx.clients.getAll.invalidate()
+      toast.success("Successfully updated client!")
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors
+      console.log(errorMessage)
+      toast.error('error')
+    }
+  })
+
+  const { mutate: lastNameMutate } = api.clients.updateLastName.useMutation({
+    onSuccess: () => {
+      setSelectedClient({
+        firstName: selectedClient.firstName,
+        lastName: updatedValue,
+        phone: selectedClient.phone,
+        email: selectedClient.email,
+        notes: selectedClient.notes,
+        id: selectedClient.id
+      })
+      
+      setUpdatedValue('')
+      setCurrentEdit('')
+      void ctx.clients.getAll.invalidate()
+      toast.success("Successfully updated client!")
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors
+      console.log(errorMessage)
+      toast.error('error')
+    }
+  })
+
+  const { mutate: phoneMutate } = api.clients.updatePhone.useMutation({
+    onSuccess: () => {
+      setSelectedClient({
+        firstName: selectedClient.firstName,
+        lastName: selectedClient.lastName,
+        phone: updatedValue,
+        email: selectedClient.email,
+        notes: selectedClient.notes,
+        id: selectedClient.id
+      })
+      
+      setUpdatedValue('')
+      setCurrentEdit('')
+      void ctx.clients.getAll.invalidate()
+      toast.success("Successfully updated client!")
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors
+      console.log(errorMessage)
+      toast.error('error')
+    }
+  })
+
+  const { mutate: emailMutate } = api.clients.updateEmail.useMutation({
+    onSuccess: () => {
+      setSelectedClient({
+        firstName: selectedClient.firstName,
+        lastName: selectedClient.lastName,
+        phone: selectedClient.phone,
+        email: updatedValue,
+        notes: selectedClient.notes,
+        id: selectedClient.id
+      })
+      
+      setUpdatedValue('')
+      setCurrentEdit('')
+      void ctx.clients.getAll.invalidate()
+      toast.success("Successfully updated client!")
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors
+      console.log(errorMessage)
+      toast.error('error')
+    }
+  })
+
+
+
+  const { selectedClient, setModalOpen, setSelectedClient }: modalProps = props
   const [currentEdit, setCurrentEdit] = useState('')
+  const [updatedValue, setUpdatedValue] = useState('')
   
   return (
     <div className={styles.modal_container}>
@@ -33,53 +139,89 @@ const Modal = (props: modalProps) => {
           {currentEdit == 'firstName' ? 
             <div className={styles.modal_info_slice}>
               <p>First Name - </p>
-              <input placeholder={selectedClient.firstName} autoFocus={true}/>
-              <p className={styles.modal_info_save}>save</p>
-              <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+              <input placeholder={selectedClient.firstName} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+              <p className={styles.modal_info_save} onClick={() => firstNameMutate({
+                id: selectedClient.id,
+                firstName: updatedValue
+              })}>save</p>
+              <p className={styles.modal_info_cancel} onClick={() => {
+                setUpdatedValue('')
+                setCurrentEdit('')
+                }}>cancel</p>
             </div>
           :
             <div className={styles.modal_info_slice}>
               <p>First Name - </p>
-              <p onClick={() => setCurrentEdit('firstName')}>{selectedClient.firstName}</p>
+              <p onClick={() => {
+                setUpdatedValue('')
+                setCurrentEdit('firstName')
+                }}>{selectedClient.firstName}</p>
             </div>
           }
           {currentEdit == 'lastName' ? 
             <div className={styles.modal_info_slice}>
               <p>Last Name - </p>
-              <input placeholder={selectedClient.lastName} autoFocus={true}/>
-              <p className={styles.modal_info_save}>save</p>
-              <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+              <input placeholder={selectedClient.lastName} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+              <p className={styles.modal_info_save} onClick={() => lastNameMutate({
+                id: selectedClient.id,
+                lastName: updatedValue
+              })}>save</p>
+              <p className={styles.modal_info_cancel} onClick={() => {
+                setUpdatedValue('')
+                setCurrentEdit('')
+                }}>cancel</p>
             </div>
           :
             <div className={styles.modal_info_slice}>
               <p>Last Name - </p>
-              <p onClick={() => setCurrentEdit('lastName')}>{selectedClient.lastName}</p>
+              <p onClick={() => {
+                setUpdatedValue('')
+                setCurrentEdit('lastName')
+                }}>{selectedClient.lastName}</p>
             </div>
           }
           {currentEdit == 'phone' ? 
           <div className={styles.modal_info_slice}>
             <p>Phone # - </p>
-            <input placeholder={selectedClient.phone} autoFocus={true}/>
-            <p className={styles.modal_info_save}>save</p>
-            <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+            <input placeholder={selectedClient.phone} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+            <p className={styles.modal_info_save} onClick={() => phoneMutate({
+                id: selectedClient.id,
+                phone: updatedValue
+              })}>save</p>
+            <p className={styles.modal_info_cancel} onClick={() => {
+              setUpdatedValue('')
+              setCurrentEdit('')
+          }}>cancel</p>
           </div>
         :
           <div className={styles.modal_info_slice}>
             <p>Phone # - </p>
-            <p onClick={() => setCurrentEdit('phone')}>{selectedClient.phone}</p>
+            <p onClick={() => {
+              setUpdatedValue('')
+              setCurrentEdit('phone')
+              }}>{selectedClient.phone}</p>
           </div>
         }
         {currentEdit == 'email' ? 
         <div className={styles.modal_info_slice}>
           <p>Email - </p>
-          <input placeholder={selectedClient.email} autoFocus={true}/>
-          <p className={styles.modal_info_save}>save</p>
-          <p className={styles.modal_info_cancel} onClick={() => setCurrentEdit('')}>cancel</p>
+          <input placeholder={selectedClient.email} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+          <p className={styles.modal_info_save} onClick={() => emailMutate({
+                id: selectedClient.id,
+                email: updatedValue
+              })}>save</p>
+          <p className={styles.modal_info_cancel} onClick={() => {
+            setUpdatedValue('')
+            setCurrentEdit('')
+            }}>cancel</p>
         </div>
       :
         <div className={styles.modal_info_slice}>
           <p>Email - </p>
-          <p onClick={() => setCurrentEdit('email')}>{selectedClient.email}</p>
+          <p onClick={() => {
+            setUpdatedValue('')
+            setCurrentEdit('email')
+        }}>{selectedClient.email}</p>
         </div>
       }
           <p>Notes: {selectedClient.notes == '' ? <p>N/A</p> : selectedClient.notes}</p>
@@ -131,7 +273,8 @@ const Home: NextPage = () => {
     lastName: '',
     phone: '',
     email: '',
-    notes: ''
+    notes: '',
+    id: ''
   })
 
   const { mutate, isLoading: isAddingUser } = api.clients.create.useMutation({
@@ -230,7 +373,8 @@ const Home: NextPage = () => {
                 lastName: client.lastName,
                 phone: client.phone,
                 email: client.email,
-                notes: client.notes
+                notes: client.notes,
+                id: client.id
                 })
                 setModalOpen(true)
                 }}>{client.firstName} {client.lastName}</div> 
@@ -238,7 +382,7 @@ const Home: NextPage = () => {
               <p onClick={() => deleteMutate(client.id)} className={styles.delete_client}>X</p>
             : 
             null}
-              {modalOpen ? <Modal selectedClient={selectedClient} setModalOpen={setModalOpen}/> : null}
+              {modalOpen ? <Modal selectedClient={selectedClient} setSelectedClient={setSelectedClient} setModalOpen={setModalOpen}/> : null}
             </div>)) : <p style={{paddingRight: '10px'}}>Sign in to see clients</p>}
           </div>
         </div>

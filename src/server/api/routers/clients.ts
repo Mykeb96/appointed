@@ -14,6 +14,7 @@ const filterUserForClient = (user: User) => {
 }
 
 export const clientsRouter = createTRPCRouter({
+  
  
   getAll: publicProcedure.query(async ({ ctx }) => {
     const clients = await ctx.prisma.client.findMany({
@@ -75,6 +76,66 @@ export const clientsRouter = createTRPCRouter({
         id: input
       }
     })
-  })
+  }),
+
+  updateFirstName: privateProcedure.input(z.object({
+    id: z.string(),
+    firstName: z.string().min(2)
+  })).mutation(async ({ctx, input}) => {
+    const upperCaseFirstName = `${input.firstName.charAt(0).toUpperCase()}${input.firstName.substring(1)}`
+    const updateClientFirstName = await ctx.prisma.client.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        firstName: upperCaseFirstName
+      }
+
+    })
+  }),
+
+  updateLastName: privateProcedure.input(z.object({
+    id: z.string(),
+    lastName: z.string().min(2)
+  })).mutation(async ({ctx, input}) => {
+    const updateClientLastName = await ctx.prisma.client.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        lastName: input.lastName
+      }
+
+    })
+  }),
+
+  updatePhone: privateProcedure.input(z.object({
+    id: z.string(),
+    phone: z.string().length(10)
+  })).mutation(async ({ctx, input}) => {
+    const updateClientFirstName = await ctx.prisma.client.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        phone: input.phone
+      }
+    })
+  }),
+
+  updateEmail: privateProcedure.input(z.object({
+    id: z.string(),
+    email: z.string().email()
+  })).mutation(async ({ctx, input}) => {
+    const updateClientFirstName = await ctx.prisma.client.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        email: input.email
+      }
+    })
+  }),
+
 
 });
