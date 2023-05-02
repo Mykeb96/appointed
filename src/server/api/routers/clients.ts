@@ -18,7 +18,7 @@ export const clientsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const clients = await ctx.prisma.client.findMany({
       orderBy: {
-        name: 'asc'
+        firstName: 'asc'
       }
     });
 
@@ -47,7 +47,8 @@ export const clientsRouter = createTRPCRouter({
   }),
 
   create: privateProcedure.input(z.object({
-    name: z.string().min(2),
+    firstName: z.string().min(2),
+    lastName: z.string().min(2),
     phone: z.string().length(10),
     email: z.string().email(),
     notes: z.string()
@@ -57,7 +58,8 @@ export const clientsRouter = createTRPCRouter({
     const client = await ctx.prisma.client.create({
       data: {
         clientOf,
-        name: input.name,
+        firstName: input.firstName,
+        lastName: input.lastName,
         phone: input.phone,
         email: input.email,
         notes: input.notes
@@ -74,13 +76,5 @@ export const clientsRouter = createTRPCRouter({
       }
     })
   })
-
-  // delete: privateProcedure.query(async ({ctx}) => {
-  //   const deleteUser = await ctx.prisma.client.delete({
-  //     where: {
-  //       id: 'clgydmubw0002rml0xek4i2xo'
-  //     }
-  //   })
-  // })
 
 });
