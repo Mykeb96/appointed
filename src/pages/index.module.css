@@ -62,3 +62,27 @@
   cursor: pointer;
   color: red;
 }
+
+.modal_info_slice{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal_info_slice > :nth-child(1){
+  text-decoration: underline;
+}
+
+.modal_info_slice > :nth-child(2){
+  margin-left: 8px;
+  border: 1px solid black;
+  padding: 4px 8px 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.modal_info_slice > :nth-child(2):hover{
+  color: limegreen;
+  border: 1px solid limegreen;
+  cursor: pointer;
+}

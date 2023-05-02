@@ -4,29 +4,46 @@ import Head from "next/head";
 import Link from "next/link";
 import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, ReactPropTypes, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
-interface clientProps{
-  firstName: string,
-  lastName: string,
-  phone: string,
-  email: string,
-  notes: string
+interface modalProps{
+  selectedClient: {
+      firstName: string,
+      lastName: string,
+      phone: string,
+      email: string,
+      notes: string
+  },
+  setModalOpen: Function
 }
 
-const Modal = ({selectedClient, setModalOpen}: any) => {
+const Modal = (props: React.PropsWithChildren<modalProps>) => {
+
+  const { selectedClient, setModalOpen } = props
 
   return (
     <div className={styles.modal_container}>
       <div className={styles.inner_modal}>
           <p onClick={() => setModalOpen(false)} className={styles.close_modal}>X</p>
-          <p>First Name: {selectedClient.firstName}</p>
-          <p>Last Name: {selectedClient.lastName}</p>
-          <p>Phone #: {selectedClient.phone}</p>
-          <p>Email: {selectedClient.email}</p>
+          <div className={styles.modal_info_slice}>
+            <p>First Name - </p>
+            <p>{selectedClient.firstName}</p>
+          </div>
+          <div className={styles.modal_info_slice}>
+            <p>Last Name - </p>
+            <p>{selectedClient.lastName}</p>
+          </div>
+          <div className={styles.modal_info_slice}>
+            <p>Phone # - </p>
+            <p>{selectedClient.phone}</p>
+          </div>
+          <div className={styles.modal_info_slice}>
+            <p>Email - </p>
+            <p>{selectedClient.email}</p>
+          </div>
           <p>Notes: {selectedClient.notes == '' ? <p>N/A</p> : selectedClient.notes}</p>
           <button onClick={() => setModalOpen(false)}>Close</button>
       </div>
