@@ -8,6 +8,7 @@ import { FunctionComponent, ReactPropTypes, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
+import { SetStateAction } from "react";
 
 interface modalProps{
   selectedClient: {
@@ -17,12 +18,12 @@ interface modalProps{
       email: string,
       notes: string
   },
-  setModalOpen: Function
+  setModalOpen: (modal: boolean) => void
 }
 
-const Modal = (props: React.PropsWithChildren<modalProps>) => {
+const Modal = (props: modalProps) => {
 
-  const { selectedClient, setModalOpen } = props
+  const { selectedClient, setModalOpen }: modalProps = props
 
   return (
     <div className={styles.modal_container}>
