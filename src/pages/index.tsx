@@ -126,8 +126,6 @@ const Modal = (props: modalProps) => {
     }
   })
 
-
-
   const { selectedClient, setModalOpen, setSelectedClient }: modalProps = props
   const [currentEdit, setCurrentEdit] = useState('')
   const [updatedValue, setUpdatedValue] = useState('')

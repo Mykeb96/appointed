@@ -98,12 +98,13 @@ export const clientsRouter = createTRPCRouter({
     id: z.string(),
     lastName: z.string().min(2)
   })).mutation(async ({ctx, input}) => {
+    const upperCaseLastName = `${input.lastName.charAt(0).toUpperCase()}${input.lastName.substring(1)}`
     const updateClientLastName = await ctx.prisma.client.update({
       where: {
         id: input.id
       },
       data: {
-        lastName: input.lastName
+        lastName: upperCaseLastName
       }
 
     })
