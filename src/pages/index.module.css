@@ -47,9 +47,9 @@
   margin-top: 20vh;
   width: 30vw;
   height: 40vh;
-  background: antiquewhite;
+  background: rgb(64 64 64);
   border-radius: 4px;
-  color: black;
+  color: white;
 }
 
 .close_modal{
@@ -69,11 +69,7 @@
   align-items: center;
 }
 
-.modal_info_slice > :nth-child(1){
-  text-decoration: underline;
-}
-
-.modal_info_slice > :nth-child(2){
+.modal_user_info{
   margin-left: 8px;
   border: 1px solid black;
   padding: 4px 8px 4px 8px;
@@ -81,9 +77,9 @@
   font-weight: bold;
 }
 
-.modal_info_slice > :nth-child(2):hover{
-  color: blue;
-  border: 1px solid blue;
+.modal_user_info:hover{
+  color: limegreen;
+  border: 1px solid limegreen;
   cursor: pointer;
 }
 
@@ -111,4 +107,14 @@
   color: red;
   border: 1px solid red;
   cursor: pointer;
+}
+
+.inner_modal > button {
+  cursor: pointer;
+}
+
+.modal_error{
+  color: red;
+  padding: 2px 12px 2px 12px;
+  border-radius: 8px;
 }

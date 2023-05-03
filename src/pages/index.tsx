@@ -34,6 +34,20 @@ const Modal = (props: modalProps) => {
 
   const ctx = api.useContext()
 
+  const errorSetter = {
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+  }
+
+  const initialModalErrors = {
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+  }
+
   const { mutate: firstNameMutate } = api.clients.updateFirstName.useMutation({
     onSuccess: () => {
       setSelectedClient({
@@ -52,8 +66,11 @@ const Modal = (props: modalProps) => {
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
-      console.log(errorMessage)
-      toast.error('error')
+      if (errorMessage && errorMessage.firstName){
+        errorSetter.firstName = 'Name must contain at least 2 character(s)'
+      }
+      setModalErrors(errorSetter)
+      toast.error('Failed to update client')
     }
   })
 
@@ -75,8 +92,11 @@ const Modal = (props: modalProps) => {
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
-      console.log(errorMessage)
-      toast.error('error')
+      if (errorMessage && errorMessage.lastName){
+        errorSetter.lastName = 'Name must contain at least 2 character(s)'
+      }
+      setModalErrors(errorSetter)
+      toast.error('Failed to update client')
     }
   })
 
@@ -98,8 +118,11 @@ const Modal = (props: modalProps) => {
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
-      console.log(errorMessage)
-      toast.error('error')
+      if (errorMessage && errorMessage.phone){
+        errorSetter.phone = 'Phone # must contain exactly 10 character(s)'
+      }
+      setModalErrors(errorSetter)
+      toast.error('Failed to update client')
     }
   })
 
@@ -122,101 +145,125 @@ const Modal = (props: modalProps) => {
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
       console.log(errorMessage)
-      toast.error('error')
+      if (errorMessage && errorMessage.email){
+        errorSetter.email = 'Invalid email'
+      }
+      setModalErrors(errorSetter)
+      toast.error('Failed to update client')
     }
   })
+
 
   const { selectedClient, setModalOpen, setSelectedClient }: modalProps = props
   const [currentEdit, setCurrentEdit] = useState('')
   const [updatedValue, setUpdatedValue] = useState('')
+  const [modalErrors, setModalErrors] = useState(initialModalErrors)
   
   return (
     <div className={styles.modal_container}>
       <div className={styles.inner_modal}>
           <p onClick={() => setModalOpen(false)} className={styles.close_modal}>X</p>
           {currentEdit == 'firstName' ? 
-            <div className={styles.modal_info_slice}>
-              <p>First Name - </p>
-              <input placeholder={selectedClient.firstName} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
-              <p className={styles.modal_info_save} onClick={() => firstNameMutate({
-                id: selectedClient.id,
-                firstName: updatedValue
-              })}>save</p>
-              <p className={styles.modal_info_cancel} onClick={() => {
-                setUpdatedValue('')
-                setCurrentEdit('')
-                }}>cancel</p>
+            <div>
+              <div className={styles.modal_info_slice}>
+                <p style={{textDecoration: 'underline', marginRight: '5px'}}>First Name - </p>
+                <input placeholder={selectedClient.firstName} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                <p className={styles.modal_info_save} onClick={() => firstNameMutate({
+                  id: selectedClient.id,
+                  firstName: updatedValue
+                })}>save</p>
+                <p className={styles.modal_info_cancel} onClick={() => {
+                  setModalErrors(initialModalErrors)
+                  setUpdatedValue('')
+                  setCurrentEdit('')
+                  }}>cancel</p>
+              </div>
+              <span className={styles.modal_error}>{modalErrors.firstName != '' ? modalErrors.firstName : ''}</span>
             </div>
           :
             <div className={styles.modal_info_slice}>
-              <p>First Name - </p>
-              <p onClick={() => {
+              <p style={{textDecoration: 'underline'}}>First Name - </p>
+              <p className={styles.modal_user_info} onClick={() => {
+                setModalErrors(initialModalErrors)
                 setUpdatedValue('')
                 setCurrentEdit('firstName')
                 }}>{selectedClient.firstName}</p>
             </div>
           }
           {currentEdit == 'lastName' ? 
-            <div className={styles.modal_info_slice}>
-              <p>Last Name - </p>
-              <input placeholder={selectedClient.lastName} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
-              <p className={styles.modal_info_save} onClick={() => lastNameMutate({
-                id: selectedClient.id,
-                lastName: updatedValue
-              })}>save</p>
-              <p className={styles.modal_info_cancel} onClick={() => {
-                setUpdatedValue('')
-                setCurrentEdit('')
-                }}>cancel</p>
-            </div>
+            <div>
+              <div className={styles.modal_info_slice}>
+                <p style={{textDecoration: 'underline', marginRight: '5px'}}>Last Name - </p>
+                <input placeholder={selectedClient.lastName} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                <p className={styles.modal_info_save} onClick={() => lastNameMutate({
+                  id: selectedClient.id,
+                  lastName: updatedValue
+                })}>save</p>
+                <p className={styles.modal_info_cancel} onClick={() => {
+                  setModalErrors(initialModalErrors)
+                  setUpdatedValue('')
+                  setCurrentEdit('')
+                  }}>cancel</p>
+              </div>
+              <span className={styles.modal_error}>{modalErrors.lastName != '' ? modalErrors.lastName : ''}</span>            </div>
           :
             <div className={styles.modal_info_slice}>
-              <p>Last Name - </p>
-              <p onClick={() => {
+              <p style={{textDecoration: 'underline'}}>Last Name - </p>
+              <p className={styles.modal_user_info} onClick={() => {
+                setModalErrors(initialModalErrors)
                 setUpdatedValue('')
                 setCurrentEdit('lastName')
                 }}>{selectedClient.lastName}</p>
             </div>
           }
           {currentEdit == 'phone' ? 
-          <div className={styles.modal_info_slice}>
-            <p>Phone # - </p>
-            <input placeholder={selectedClient.phone} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
-            <p className={styles.modal_info_save} onClick={() => phoneMutate({
-                id: selectedClient.id,
-                phone: updatedValue
-              })}>save</p>
-            <p className={styles.modal_info_cancel} onClick={() => {
-              setUpdatedValue('')
-              setCurrentEdit('')
-          }}>cancel</p>
-          </div>
+          <div>
+            <div className={styles.modal_info_slice}>
+              <p style={{textDecoration: 'underline', marginRight: '5px'}}>Phone # - </p>
+              <input placeholder={selectedClient.phone} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+              <p className={styles.modal_info_save} onClick={() => phoneMutate({
+                  id: selectedClient.id,
+                  phone: updatedValue
+                })}>save</p>
+              <p className={styles.modal_info_cancel} onClick={() => {
+                setModalErrors(initialModalErrors)
+                setUpdatedValue('')
+                setCurrentEdit('')
+              }}>cancel</p>
+            </div>
+            <span className={styles.modal_error}>{modalErrors.phone != '' ? modalErrors.phone : ''}</span>          </div>
         :
           <div className={styles.modal_info_slice}>
-            <p>Phone # - </p>
-            <p onClick={() => {
+            <p style={{textDecoration: 'underline'}}>Phone # - </p>
+            <p className={styles.modal_user_info} onClick={() => {
+              setModalErrors(initialModalErrors)
               setUpdatedValue('')
               setCurrentEdit('phone')
               }}>{selectedClient.phone}</p>
           </div>
         }
         {currentEdit == 'email' ? 
-        <div className={styles.modal_info_slice}>
-          <p>Email - </p>
-          <input placeholder={selectedClient.email} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
-          <p className={styles.modal_info_save} onClick={() => emailMutate({
-                id: selectedClient.id,
-                email: updatedValue
-              })}>save</p>
-          <p className={styles.modal_info_cancel} onClick={() => {
-            setUpdatedValue('')
-            setCurrentEdit('')
-            }}>cancel</p>
+        <div>
+          <div className={styles.modal_info_slice}>
+            <p style={{textDecoration: 'underline', marginRight: '5px'}}>Email - </p>
+            <input placeholder={selectedClient.email} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+            <p className={styles.modal_info_save} onClick={() => emailMutate({
+                  id: selectedClient.id,
+                  email: updatedValue
+                })}>save</p>
+            <p className={styles.modal_info_cancel} onClick={() => {
+              setModalErrors(initialModalErrors)
+              setUpdatedValue('')
+              setCurrentEdit('')
+              }}>cancel</p>
+          </div>
+          <span className={styles.modal_error}>{modalErrors.email != '' ? modalErrors.email : ''}</span>
         </div>
       :
         <div className={styles.modal_info_slice}>
-          <p>Email - </p>
-          <p onClick={() => {
+          <p style={{textDecoration: 'underline'}}>Email - </p>
+          <p className={styles.modal_user_info} onClick={() => {
+            setModalErrors(initialModalErrors)
             setUpdatedValue('')
             setCurrentEdit('email')
         }}>{selectedClient.email}</p>
