@@ -27,8 +27,6 @@ export const clientsRouter = createTRPCRouter({
       userId: clients.map((client) => client.clientOf)
     })).map(filterUserForClient)
 
-    console.log(users)
-
     return clients.map((client) => {
 
       const clientOf = users.find((user) => user.id === client.clientOf)
@@ -137,6 +135,4 @@ export const clientsRouter = createTRPCRouter({
       }
     })
   }),
-
-
 });

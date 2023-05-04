@@ -1,10 +1,9 @@
 import styles from "./index.module.css";
 import { NextComponentType, type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { SignIn, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignOutButton, useUser } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
-import { FunctionComponent, ReactPropTypes, useState, useEffect, Dispatch } from 'react'
+import { useState, Dispatch } from 'react'
 import { toast } from 'react-hot-toast'
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
@@ -283,8 +282,6 @@ const Home: NextPage = () => {
   const user = useUser();
   const ctx = api.useContext()
   const router = useRouter()
-
-  // console.log(user)
 
   const initialInput = {
     firstName: '',
