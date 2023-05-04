@@ -16,10 +16,10 @@ export const appointmentsRouter = createTRPCRouter({
         const appointments = await ctx.prisma.appointment.findMany()
         
         const users = (await clerkClient.users.getUserList({
-            userId: appointments.map((appointment: any) => appointment.clientOf)
+            userId: appointments.map((appointment) => appointment.clientOf)
         })).map(filterUserForClient)
     
-        return appointments.map((appointment: any) => {
+        return appointments.map((appointment) => {
     
             const clientOf = users.find((user) => user.id === appointment.clientOf)
     

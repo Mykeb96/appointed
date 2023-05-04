@@ -18,8 +18,8 @@ const Calendar: NextPage = () => {
     return (
         <>
             <main className={styles.main}>
-                {user.user != null ? data.map((appointment: any) => 
-                <div style={{display: 'flex', flexDirection: 'column'}}>
+                {user.user != null ? data.map((appointment, key) => 
+                <div style={{display: 'flex', flexDirection: 'column'}} key={key}>
                     <span>clientId: {appointment.appointment.clientId}</span>
                     <span>date: {appointment.appointment.date}</span>
                     <span>time: {appointment.appointment.time}</span>
