@@ -47,6 +47,11 @@ const Modal = (props: modalProps) => {
     email: '',
   }
 
+  const initialAppointmentInfo = {
+    date: '',
+    time: ''
+  }
+
   const { mutate: firstNameMutate } = api.clients.updateFirstName.useMutation({
     onSuccess: () => {
       setSelectedClient({
@@ -152,11 +157,21 @@ const Modal = (props: modalProps) => {
     }
   })
 
+  const { mutate: appointmentMutate } = api.appointments.scheduleAppointment.useMutation({
+    onSuccess: () => {
+      toast.success('Added appointment')
+    },
+    onError: () => {
+      toast.error('failed to schedule appointment')
+    }
+  })
 
   const { selectedClient, setModalOpen, setSelectedClient }: modalProps = props
   const [currentEdit, setCurrentEdit] = useState('')
   const [updatedValue, setUpdatedValue] = useState('')
   const [modalErrors, setModalErrors] = useState(initialModalErrors)
+  const [toggleAppointmentInput, setToggleAppointmentInput] = useState(false)
+  const [appointmentInfo, setAppointmetInfo] = useState(initialAppointmentInfo)
   
   return (
     <div className={styles.modal_container}>
@@ -268,9 +283,25 @@ const Modal = (props: modalProps) => {
         }}>{selectedClient.email}</p>
         </div>
       }
-          <p>Notes: {selectedClient.notes == '' ? <p>N/A</p> : selectedClient.notes}</p>
-          <button onClick={() => setModalOpen(false)}>Close</button>
+          <p className={styles.user_notes}>Notes: {selectedClient.notes == '' ? <p>N/A</p> : selectedClient.notes}</p>
+          <div className={styles.modal_buttons}>
+            <button onClick={() => setToggleAppointmentInput(!toggleAppointmentInput)}>Schedule appointment</button>
+            <button onClick={() => setModalOpen(false)}>Close</button>
+          </div>
       </div>
+      
+      {toggleAppointmentInput ? 
+          <div className={styles.appointment_modal}>
+            <input type="date" onChange={(e: any) => setAppointmetInfo({date: e.target.value, time: appointmentInfo.time})}/>
+            <input type="time" onChange={(e: any) => setAppointmetInfo({date: appointmentInfo.date, time: e.target.value})}/>
+            <button onClick={() => appointmentMutate({
+              date: appointmentInfo.date,
+              time: appointmentInfo.time,
+              clientId: selectedClient.id
+            })}>Confirm appointment</button>
+          </div> 
+          : 
+          null}
     </div>
   )
 
@@ -428,7 +459,6 @@ const Home: NextPage = () => {
             </div>)) : <p style={{paddingRight: '10px'}}>Sign in to see clients</p>}
           </div>
         </div>
-       
 
       </main>
     </>

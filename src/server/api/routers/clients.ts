@@ -1,7 +1,6 @@
 import type { User } from '@clerk/nextjs/dist/api'
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from '@trpc/server';
-import { create } from 'domain';
 import { z } from "zod";
 
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
@@ -135,4 +134,5 @@ export const clientsRouter = createTRPCRouter({
       }
     })
   }),
+
 });

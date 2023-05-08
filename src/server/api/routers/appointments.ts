@@ -2,13 +2,14 @@ import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/ap
 import type { User } from '@clerk/nextjs/dist/api'
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from '@trpc/server';
+import { z } from "zod";
 
 const filterUserForClient = (user: User) => {
     return {
       id: user.id,
       username: user.username
     }
-  }
+}
 
 export const appointmentsRouter = createTRPCRouter({
 
@@ -33,6 +34,23 @@ export const appointmentsRouter = createTRPCRouter({
             clientOf
             }
       })
+    }),
+
+    scheduleAppointment: privateProcedure.input(z.object({
+      date: z.string(),
+      time: z.string(),
+      clientId: z.string(),
+    })).mutation(async ({ctx, input}) => {
+        const clientOf = ctx.userId
+        const appointment = await ctx.prisma.appointment.create({
+        data: {
+          date: input.date,
+          time: input.time,
+          clientId: input.clientId,
+          clientOf
+        }
+      })
+      return appointment
     })
     
 })

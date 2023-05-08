@@ -43,10 +43,11 @@
 }
 
 .inner_modal{
+  border: 1px solid white;
   margin: auto;
-  margin-top: 20vh;
-  width: 30vw;
-  height: 40vh;
+  margin-top: 75px;
+  width: 600px;
+  height: fit-content;
   background: rgb(64 64 64);
   border-radius: 4px;
   color: white;
@@ -67,6 +68,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px 0 20px 0;
 }
 
 .modal_user_info{
@@ -109,12 +111,61 @@
   cursor: pointer;
 }
 
-.inner_modal > button {
-  cursor: pointer;
-}
-
 .modal_error{
   color: red;
   padding: 2px 12px 2px 12px;
   border-radius: 8px;
+}
+
+.user_notes{
+  border: 1px solid white;
+  width: fit-content;
+  margin: auto;
+  border-radius: 4px;
+  padding: 5px 40px 5px 40px;
+}
+
+.modal_buttons{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.modal_buttons > button:hover {
+  cursor: pointer;
+}
+
+.modal_buttons > * {
+  width: fit-content;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.appointment_modal{
+  display: flex;
+  flex-direction: column;
+  background: rgb(64 64 64);
+  width: 600px;
+  margin: auto;
+  margin-top: 50px;
+  border-radius: 4px;
+  border: 1px solid white;
+}
+
+.appointment_modal > input {
+  width: 200px;
+  margin: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.appointment_modal > button{
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.appointment_modal > button:hover{
+  cursor: pointer;
 }
