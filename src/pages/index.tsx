@@ -292,8 +292,8 @@ const Modal = (props: modalProps) => {
       
       {toggleAppointmentInput ? 
           <div className={styles.appointment_modal}>
-            <input type="date" onChange={(e: any) => setAppointmetInfo({date: e.target.value, time: appointmentInfo.time})}/>
-            <input type="time" onChange={(e: any) => setAppointmetInfo({date: appointmentInfo.date, time: e.target.value})}/>
+            <input type="date" onChange={(e) => setAppointmetInfo({date: e.target.value, time: appointmentInfo.time})}/>
+            <input type="time" onChange={(e) => setAppointmetInfo({date: appointmentInfo.date, time: e.target.value})}/>
             <button onClick={() => appointmentMutate({
               date: appointmentInfo.date,
               time: appointmentInfo.time,
