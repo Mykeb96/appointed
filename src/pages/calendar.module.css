@@ -1,4 +1,103 @@
 .main{
     height: 100vh;
     width: 100vw;
+    display: flex;
 }
+
+.appointment{
+    border: 1px solid white;
+    padding: 10px;
+    margin: 30px;
+    width: fit-content;
+    border-radius: 4px;
+    height: fit-content;
+}
+
+.appointment:hover{
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+}
+
+.modal_container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.202);
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .inner_modal{
+    border: 1px solid white;
+    margin: auto;
+    margin-top: 75px;
+    width: 600px;
+    height: fit-content;
+    background: rgb(64 64 64);
+    border-radius: 4px;
+    color: white;
+  }
+  
+  .close_modal{
+    font-size: 25px;
+    position: absolute;
+    margin: 2px 0px 0px 5px;
+  }
+  
+  .close_modal:hover{
+    cursor: pointer;
+    color: red;
+  }
+  
+  .modal_info_slice{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0 20px 0;
+  }
+  
+  .modal_user_info{
+    margin-left: 8px;
+    border: 1px solid white;
+    padding: 4px 8px 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .modal_user_info:hover{
+    color: limegreen;
+    border: 1px solid limegreen;
+    cursor: pointer;
+  }
+  
+  .modal_info_save{
+    border: 1px solid black;
+    padding: 2px 8px 2px 8px;
+    margin-left: 10px;
+    border-radius: 4px;
+  }
+  
+  .modal_info_save:hover{
+    color: limegreen;
+    border: 1px solid limegreen;
+    cursor: pointer;
+  }
+  
+  .modal_info_cancel{
+    border: 1px solid black;
+    padding: 2px 6px 2px 8px;
+    margin-left: 10px;
+    border-radius: 4px;
+  }
+  
+  .modal_info_cancel:hover{
+    color: red;
+    border: 1px solid red;
+    cursor: pointer;
+  }
+  
+  .modal_error{
+    color: red;
+    padding: 2px 12px 2px 12px;
+    border-radius: 8px;
+  }

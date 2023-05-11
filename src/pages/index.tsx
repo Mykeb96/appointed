@@ -40,6 +40,11 @@ const Modal = (props: modalProps) => {
     email: '',
   }
 
+  const appointmentErrorSetter = {
+    date: '',
+    time: ''
+  }
+
   const initialModalErrors = {
     firstName: '',
     lastName: '',
@@ -48,6 +53,11 @@ const Modal = (props: modalProps) => {
   }
 
   const initialAppointmentInfo = {
+    date: '',
+    time: ''
+  }
+
+  const initialAppointmentErrors = {
     date: '',
     time: ''
   }
@@ -159,9 +169,21 @@ const Modal = (props: modalProps) => {
 
   const { mutate: appointmentMutate } = api.appointments.scheduleAppointment.useMutation({
     onSuccess: () => {
+      setAppointmentErrors(initialAppointmentErrors)
+      setAppointmentInfo(initialAppointmentInfo)
+      setToggleAppointmentInput(false)
       toast.success('Added appointment')
     },
-    onError: () => {
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors
+      if (errorMessage && errorMessage.date) {
+        appointmentErrorSetter.date = 'select date'
+      }
+      if (errorMessage && errorMessage.time) {
+        appointmentErrorSetter.time = 'select time'
+      }
+
+      setAppointmentErrors(appointmentErrorSetter)
       toast.error('failed to schedule appointment')
     }
   })
@@ -171,7 +193,8 @@ const Modal = (props: modalProps) => {
   const [updatedValue, setUpdatedValue] = useState('')
   const [modalErrors, setModalErrors] = useState(initialModalErrors)
   const [toggleAppointmentInput, setToggleAppointmentInput] = useState(false)
-  const [appointmentInfo, setAppointmetInfo] = useState(initialAppointmentInfo)
+  const [appointmentInfo, setAppointmentInfo] = useState(initialAppointmentInfo)
+  const [appointmentErrors, setAppointmentErrors] = useState(initialAppointmentErrors)
   
   return (
     <div className={styles.modal_container}>
@@ -292,9 +315,11 @@ const Modal = (props: modalProps) => {
       
       {toggleAppointmentInput ? 
           <div className={styles.appointment_modal}>
-            <input type="date" onChange={(e) => setAppointmetInfo({date: e.target.value, time: appointmentInfo.time})}/>
-            <input type="time" onChange={(e) => setAppointmetInfo({date: appointmentInfo.date, time: e.target.value})}/>
-            <button onClick={() => appointmentMutate({
+            <input type="date" onChange={(e) => setAppointmentInfo({date: e.target.value, time: appointmentInfo.time})}/>
+            <span className={styles.modal_error}>{appointmentErrors.date != '' ? appointmentErrors.date : null}</span>
+            <input type="time" onChange={(e) => setAppointmentInfo({date: appointmentInfo.date, time: e.target.value})}/>
+            <span className={styles.modal_error}>{appointmentErrors.time != '' ? appointmentErrors.time : null}</span>
+            <button style={{marginTop: '25px'}} onClick={() => appointmentMutate({
               date: appointmentInfo.date,
               time: appointmentInfo.time,
               clientId: selectedClient.id
