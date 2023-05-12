@@ -174,6 +174,7 @@ const Calendar: NextPage = () => {
                 {user.user != null ? data.appointmentList.map((appointment: appointment, key: number) => 
                 <div className={styles.appointment} onClick={() => {
                     setModalOpen(true)
+                    console.log(data.appointmentList)
                     setSelectedAppointment({
                         date: appointment.appointment.date,
                         time: appointment.appointment.time,

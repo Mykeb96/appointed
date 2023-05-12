@@ -41,7 +41,7 @@ export const appointmentsRouter = createTRPCRouter({
 
         })
 
-      const appointmentList: any = appointments.map((appointment) => {
+      const appointmentList = appointments.map((appointment) => {
     
         const clientOf = users.find((user) => user.id === appointment.clientOf)
 
