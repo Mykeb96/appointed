@@ -104,7 +104,15 @@ export const appointmentsRouter = createTRPCRouter({
           id: input.id
         },
         data: {
-          date: input.time
+          time: input.time
+        }
+      })
+    }),
+
+    delete: privateProcedure.input(z.string()).mutation(async ({ctx, input}) => {
+      const deleteAppointment = await ctx.prisma.appointment.delete({
+        where: {
+          id: input
         }
       })
     }),

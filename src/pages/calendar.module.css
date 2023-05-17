@@ -1,7 +1,18 @@
 .main{
     height: 100vh;
     width: 100vw;
-    display: flex;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.appointments_container{
+  height: calc(100vh - 150px);
+  width: 250px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  overflow-y: scroll;
+  margin: auto;
+  margin-top: 30px;
 }
 
 .appointment{
@@ -11,6 +22,20 @@
     width: fit-content;
     border-radius: 4px;
     height: fit-content;
+}
+
+.appointment_wrapper{
+  display: flex;
+  align-items: center;
+}
+
+.appointment_wrapper > span{
+  font-size: 25px;
+}
+
+.appointment_wrapper > span:hover{
+  color: red;
+  cursor: pointer;
 }
 
 .appointment:hover{
@@ -36,12 +61,15 @@
     background: rgb(64 64 64);
     border-radius: 4px;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .close_modal{
     font-size: 25px;
-    position: absolute;
     margin: 2px 0px 0px 5px;
+    align-self: flex-start;
   }
   
   .close_modal:hover{
@@ -54,6 +82,12 @@
     justify-content: center;
     align-items: center;
     padding: 20px 0 20px 0;
+  }
+
+  .modal_info_slice > span:hover{
+    color: white;
+    border: 1px solid white;
+    cursor: default;
   }
   
   .modal_user_info{
@@ -100,4 +134,13 @@
     color: red;
     padding: 2px 12px 2px 12px;
     border-radius: 8px;
+  }
+
+  .modal_close{
+    margin-bottom: 25px;
+    margin-top: 25px;
+  }
+
+  .modal_close:hover{
+    cursor: pointer;
   }

@@ -9,13 +9,15 @@ interface modalProps{
     selectedAppointment: {
         date: string,
         time: string,
-        id: string
+        id: string,
+        name: string | undefined
     },
     setModalOpen: (modal: boolean) => void,
     setSelectedAppointment: (Dispatch<SetStateAction<{
         date: string,
         time: string,
-        id: string
+        id: string,
+        name: string | undefined
     }>>)
   }
 
@@ -35,19 +37,39 @@ const Modal = (props: modalProps) => {
 
     const { mutate: dateMutation, isLoading: dateIsLoading } = api.appointments.updateDate.useMutation({
         onSuccess: () => {
-            toast.success('updated date!')
+          setSelectedAppointment({
+            date: updatedValue,
+            time: selectedAppointment.time,
+            id: selectedAppointment.id,
+            name: selectedAppointment.name
+          })
+          
+          void ctx.appointments.getAll.invalidate()
+          toast.success('updated date!')
+          setUpdatedValue('')
+          setCurrentEdit('')
         },
         onError: () => {
-            console.log('error')
+          console.log('error')
         }
     })
 
     const { mutate: timeMutation, isLoading: timeIsLoading } = api.appointments.updateTime.useMutation({
         onSuccess: () => {
-            toast.success('updated date!')
+          setSelectedAppointment({
+            date: selectedAppointment.date,
+            time: updatedValue,
+            id: selectedAppointment.id,
+            name: selectedAppointment.name
+          })
+
+          void ctx.appointments.getAll.invalidate()
+          toast.success('updated time!')
+          setUpdatedValue('')
+          setCurrentEdit('')
         },
         onError: () => {
-            console.log('error')
+          console.log('error')
         }
     })
     
@@ -55,6 +77,10 @@ const Modal = (props: modalProps) => {
       <div className={styles.modal_container}>
         <div className={styles.inner_modal}>
             <p onClick={() => setModalOpen(false)} className={styles.close_modal}>X</p>
+            <div className={styles.modal_info_slice}>
+              <p style={{textDecoration: 'underline'}}>Client - </p>
+              <span className={styles.modal_user_info}>{selectedAppointment.name}</span>
+            </div>
             {currentEdit == 'date' ? 
               <div>
                 <div className={styles.modal_info_slice}>
@@ -86,7 +112,7 @@ const Modal = (props: modalProps) => {
               <div>
                 <div className={styles.modal_info_slice}>
                   <p style={{textDecoration: 'underline', marginRight: '5px'}}>Time - </p>
-                  <input placeholder={selectedAppointment.time} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                  <input type="time" placeholder={selectedAppointment.time} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
                   <p className={styles.modal_info_save} onClick={() => timeMutation({
                     id: selectedAppointment.id,
                     time: updatedValue
@@ -109,7 +135,7 @@ const Modal = (props: modalProps) => {
                   }}>{selectedAppointment.time}</p>
               </div>
             }
-              <button onClick={() => setModalOpen(false)}>Close</button>
+              <button className={styles.modal_close} onClick={() => setModalOpen(false)}>Close</button>
         </div>
       </div>
     )
@@ -119,15 +145,34 @@ const Modal = (props: modalProps) => {
 const Calendar: NextPage = () => {
 
     const user = useUser();
+    const ctx = api.useContext()
 
-    const defaultAppointment = {
+    interface selectedAppointmentType {
+      date: string,
+      time: string,
+      id: string,
+      name: string | undefined
+    }
+
+    const defaultAppointment: selectedAppointmentType = {
         date: '',
         time: '',
-        id: ''
+        id: '',
+        name: '',
     }
+
+    const currentDate = new Date().toString()
+
 
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedAppointment, setSelectedAppointment] = useState(defaultAppointment)
+
+    const { mutate: deleteMutation } = api.appointments.delete.useMutation({
+      onSuccess: () => {
+        void ctx.appointments.getAll.invalidate()
+        toast.success("Successfully deleted appointment!")
+      }
+    })
 
     const { data, isLoading } = api.appointments.getAll.useQuery();
 
@@ -159,6 +204,7 @@ const Calendar: NextPage = () => {
             const userExists = clientList?.find((el) => el.client.id == clientId)
 
             if (userExists) {
+              console.log(typeof(userExists.client.firstName))
                 return userExists.client.firstName
             } else {
                 return 'Cannot find client name'
@@ -167,30 +213,36 @@ const Calendar: NextPage = () => {
 
     }
 
-
     return (
         <>
             <main className={styles.main}>
-                {user.user != null ? data.appointmentList.map((appointment: appointment, key: number) => 
-                <div className={styles.appointment} onClick={() => {
-                    setModalOpen(true)
-                    console.log(data.appointmentList)
-                    setSelectedAppointment({
-                        date: appointment.appointment.date,
-                        time: appointment.appointment.time,
-                        id: appointment.appointment.id
-                    })
-                    }} style={{display: 'flex', flexDirection: 'column'}} key={key}>
-                    <span>client: {findUser(appointment)}</span>
-                    <span>date: {appointment.appointment.date}</span>
-                    <span>time: {appointment.appointment.time}</span>
+              <span>CURRENT DATE: {currentDate}</span>
+              <div className={styles.appointments_container}>
+                {user.user != null ? 
+                data.appointmentList.map((appointment: appointment, key: number) => 
+                <div className={styles.appointment_wrapper} key={key}>
+                  <div className={styles.appointment} onClick={() => {
+                      setModalOpen(true)
+                      setSelectedAppointment({
+                          date: appointment.appointment.date,
+                          time: appointment.appointment.time,
+                          id: appointment.appointment.id,
+                          name: findUser(appointment)
+                      })
+                      }} style={{display: 'flex', flexDirection: 'column'}} key={key}>
+                      <span>client: {findUser(appointment)}</span>
+                      <span>date: {appointment.appointment.date}</span>
+                      <span>time: {appointment.appointment.time}</span>
+                  </div>
+                  <span onClick={() => deleteMutation(appointment.appointment.id)}>X</span>
                 </div>
                 )
                 :
                 null
                 }
-
-                {modalOpen ? <Modal selectedAppointment={selectedAppointment} setSelectedAppointment={setSelectedAppointment} setModalOpen={setModalOpen} /> : null} 
+                </div>
+                
+                {modalOpen ? <Modal selectedAppointment={selectedAppointment} setSelectedAppointment={setSelectedAppointment} setModalOpen={setModalOpen} /> : null}
             </main>
         </>
     )
