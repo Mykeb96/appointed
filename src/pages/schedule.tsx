@@ -8,6 +8,7 @@ import { BiSearchAlt } from 'react-icons/bi'
 interface appointmentSelected {
     date: string,
     time: string,
+    mltryTime: string,
     id: string,
     name: string | undefined
   }
@@ -15,6 +16,7 @@ interface appointmentSelected {
 const defaultAppointment: appointmentSelected = {
     date: '',
     time: '',
+    mltryTime: '',
     id: '',
     name: '',
 }
@@ -27,6 +29,7 @@ interface appointment {
         date: string,
         id: string,
         time: string,
+        mltryTime: string,
         updatedAt: object
     },
     clientOf: {
@@ -39,9 +42,13 @@ interface appointment {
 const Schedule: NextPage = () => {
 
     const user = useUser();
-    const todaysAppointments: {client: string | undefined, date: string, time: string}[] = []
-    const tomorrowsAppointments: {client: string | undefined, date: string, time: string}[] = []
-    const futureAppointments: {client: string | undefined, date: string, time: string}[] = []
+    const todaysAppointments: {client: string | undefined, date: string, time: string, mltryTime: string}[] = []
+    const tomorrowsAppointments: {client: string | undefined, date: string, time: string, mltryTime: string}[] = []
+    const futureAppointments: {client: string | undefined, date: string, time: string, mltryTime: string}[] = []
+
+    const [todaySearch, setTodaySearch] = useState('')
+    const [tomorrowSearch, setTomorrowSearch] = useState('')
+    const [futureSearch, setFutureSearch] = useState('')
 
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedAppointment, setSelectedAppointment] = useState(defaultAppointment)
@@ -60,7 +67,6 @@ const Schedule: NextPage = () => {
             const userExists = clientList?.find((el) => el.client.id == clientId)
 
             if (userExists) {
-              console.log(typeof(userExists.client.firstName))
                 return userExists.client.firstName
             } else {
                 return 'Cannot find client name'
@@ -83,14 +89,27 @@ const Schedule: NextPage = () => {
         const currentDate = `${year}-${month}-${day}`
         const tomorrowDate = `${year}-${month}-${dayTomorrow}`
 
+        const compare = (a: {client: string | undefined, date: string, time: string, mltryTime: string}, b: {client: string | undefined, date: string, time: string, mltryTime: string}) => {
+            if (a.mltryTime < b.mltryTime){
+                return -1
+            }
+            if (a.mltryTime > b.mltryTime){
+                return 1
+            }
+            return 0
+        }
+
         data.appointmentList.map((appointment: appointment, key: number) => {
             if (appointment.appointment.date == currentDate){
-                todaysAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time})
-                console.log(todaysAppointments)
+                todaysAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime})
+                todaysAppointments.sort(compare)
+
             } else if (appointment.appointment.date == tomorrowDate) {
-                tomorrowsAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time})
+                tomorrowsAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime})
+                tomorrowsAppointments.sort(compare)
             } else {
-                futureAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time})
+                futureAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime})
+                futureAppointments.sort(compare)
             }
         })
     }
@@ -107,20 +126,31 @@ const Schedule: NextPage = () => {
                     <span>Today&apos;s Appointments</span>
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <BiSearchAlt />
-                        <input className={styles.appointment_search} placeholder="Search..."/>
+                        <input onChange={(e) => setTodaySearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
                     </div>
                 </div>
 
-                <div className={styles.appointment_list}>
+                <div>
                     {todaysAppointments.length > 0 ?
-                        <div>
-                            {todaysAppointments.map((appointment, key) => 
+                        <div className={styles.appointment_list}>
+                            {todaySearch == '' ? 
+                                todaysAppointments.map((appointment, key) => 
                                 <div className={styles.appointment} key={key}>
                                     <span>Client: {appointment.client}</span>
                                     <span>Date: {appointment.date}</span>
                                     <span>Time: {appointment.time}</span>
                                 </div>
-                            )}
+                            )
+                            :   <div>
+                                    {todaysAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(todaySearch.toLocaleLowerCase())).map((appointment, key) => 
+                                        <div className={styles.appointment} key={key}>
+                                            <span>Client: {appointment.client}</span>
+                                            <span>Date: {appointment.date}</span>
+                                            <span>Time: {appointment.time}</span>
+                                        </div>
+                                    )}
+                                </div>
+                        }
                         </div>
                     :
                         null
@@ -133,23 +163,34 @@ const Schedule: NextPage = () => {
                     <span>Tomorrow&apos;s Appointments</span>
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <BiSearchAlt />
-                        <input className={styles.appointment_search} placeholder="Search..."/>
+                        <input onChange={(e) => setTomorrowSearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
                     </div>
                 </div>
 
-                <div className={styles.appointment_list}>
+                <div>
                     {tomorrowsAppointments.length > 0 ?
-                        <div>
-                            {tomorrowsAppointments.map((appointment, key) => 
+                        <div className={styles.appointment_list}>
+                            {tomorrowSearch == '' ? 
+                                tomorrowsAppointments.map((appointment, key) => 
                                 <div className={styles.appointment} key={key}>
                                     <span>Client: {appointment.client}</span>
                                     <span>Date: {appointment.date}</span>
                                     <span>Time: {appointment.time}</span>
                                 </div>
-                            )}
+                            )
+                            :   <div>
+                                    {tomorrowsAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(tomorrowSearch.toLocaleLowerCase())).map((appointment, key) => 
+                                        <div className={styles.appointment} key={key}>
+                                            <span>Client: {appointment.client}</span>
+                                            <span>Date: {appointment.date}</span>
+                                            <span>Time: {appointment.time}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            }
                         </div>
-                        :
-                        null
+                            :
+                            null
                     }
                 </div>
             </div>
@@ -159,20 +200,31 @@ const Schedule: NextPage = () => {
                     <span>Future Appointments</span>
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <BiSearchAlt />
-                        <input className={styles.appointment_search} placeholder="Search..."/>
+                        <input onChange={(e) => setFutureSearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
                     </div>
                 </div>
 
-                <div className={styles.appointment_list}>
+                <div>
                     {futureAppointments.length > 0 ?
-                        <div>
-                            {futureAppointments.map((appointment, key) => 
+                        <div className={styles.appointment_list}>
+                            {futureSearch == '' ? 
+                            futureAppointments.map((appointment, key) => 
                                 <div className={styles.appointment} key={key}>
                                     <span>Client: {appointment.client}</span>
                                     <span>Date: {appointment.date}</span>
                                     <span>Time: {appointment.time}</span>
                                 </div>
-                            )}
+                            )
+                            :   <div>
+                                    {futureAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(futureSearch.toLocaleLowerCase())).map((appointment, key) => 
+                                        <div className={styles.appointment} key={key}>
+                                            <span>Client: {appointment.client}</span>
+                                            <span>Date: {appointment.date}</span>
+                                            <span>Time: {appointment.time}</span>
+                                        </div>
+                                    )}
+                                </div>
+                        }
                         </div>
                         :
                         null

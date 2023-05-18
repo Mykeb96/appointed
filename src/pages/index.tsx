@@ -195,6 +195,18 @@ const Modal = (props: modalProps) => {
   const [toggleAppointmentInput, setToggleAppointmentInput] = useState(false)
   const [appointmentInfo, setAppointmentInfo] = useState(initialAppointmentInfo)
   const [appointmentErrors, setAppointmentErrors] = useState(initialAppointmentErrors)
+
+  const date = new Date
+
+  const year = date.getFullYear();
+  let month = (date.getMonth() + 1).toString(); // Months are zero-based
+  let day = (date.getDate()).toString();
+
+  month = parseInt(month) < 10 ? '0' + month : month;
+  day = parseInt(day) < 10 ? '0' + day : day;
+  const dayTomorrow = parseInt(day) + 1 < 10 ? '0' + (parseInt(day) + 1).toString() : (parseInt(day) + 1).toString();
+
+  const currentDate = `${year}-${month}-${day}`
   
   return (
     <div className={styles.modal_container}>
@@ -315,7 +327,7 @@ const Modal = (props: modalProps) => {
       
       {toggleAppointmentInput ? 
           <div className={styles.appointment_modal}>
-            <input type="date" onChange={(e) => setAppointmentInfo({date: e.target.value, time: appointmentInfo.time})}/>
+            <input type="date" min={currentDate} onChange={(e) => setAppointmentInfo({date: e.target.value, time: appointmentInfo.time})}/>
             <span className={styles.modal_error}>{appointmentErrors.date != '' ? appointmentErrors.date : null}</span>
             <input type="time" onChange={(e) => setAppointmentInfo({date: appointmentInfo.date, time: e.target.value})}/>
             <span className={styles.modal_error}>{appointmentErrors.time != '' ? appointmentErrors.time : null}</span>

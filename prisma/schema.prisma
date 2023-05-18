@@ -32,6 +32,7 @@ model Appointment {
 
   date     String
   time     String
+  mltryTime String
   clientOf String
   Client   Client? @relation(fields: [clientId], references: [id])
   clientId String?

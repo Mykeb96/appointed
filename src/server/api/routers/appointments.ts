@@ -70,10 +70,31 @@ export const appointmentsRouter = createTRPCRouter({
       clientId: z.string().min(3),
     })).mutation(async ({ctx, input}) => {
         const clientOf = ctx.userId
+        let stdTime = ''
+
+        const timeArray = input.time.split(':');
+
+        if (timeArray[0] && timeArray[1]) {
+          let hours = parseInt(timeArray[0]);
+          const minutes = parseInt(timeArray[1]);
+
+          const period = (hours >= 12) ? 'PM' : 'AM';
+
+          if (hours === 0) {
+            hours = 12;
+          } else if (hours > 12) {
+            hours = hours - 12;
+          }
+
+          stdTime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ' + period;
+
+        }
+      
         const appointment = await ctx.prisma.appointment.create({
         data: {
           date: input.date,
-          time: input.time,
+          time: stdTime,
+          mltryTime: input.time,
           clientId: input.clientId,
           clientOf
         }
