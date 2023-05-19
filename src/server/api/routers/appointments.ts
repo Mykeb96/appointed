@@ -120,12 +120,33 @@ export const appointmentsRouter = createTRPCRouter({
       id: z.string().min(2),
       time: z.string().min(2)
     })).mutation(async ({ctx, input}) => {
+      let stdTime = ''
+
+      const timeArray = input.time.split(':');
+
+      if (timeArray[0] && timeArray[1]) {
+        let hours = parseInt(timeArray[0]);
+        const minutes = parseInt(timeArray[1]);
+
+        const period = (hours >= 12) ? 'PM' : 'AM';
+
+        if (hours === 0) {
+          hours = 12;
+        } else if (hours > 12) {
+          hours = hours - 12;
+        }
+
+        stdTime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ' + period;
+
+      }
+
       const updateTime = await ctx.prisma.appointment.update({
         where: {
           id: input.id
         },
         data: {
-          time: input.time
+          time: stdTime,
+          mltryTime: input.time
         }
       })
     }),
