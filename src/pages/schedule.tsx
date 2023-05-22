@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react'
 import { BiSearchAlt } from 'react-icons/bi'
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import { FaRegHandPointer } from 'react-icons/fa'
 
 interface appointmentSelected {
     date: string,
@@ -68,6 +69,30 @@ const Schedule: NextPage = () => {
     const [updatedValue, setUpdatedValue] = useState('')
     const [modalErrors, setModalErrors] = useState(initialModalErrors)
 
+    const converTime = (time: string) => {
+        let stdTime = ''
+
+        const timeArray = time.split(':');
+  
+        if (timeArray[0] && timeArray[1]) {
+          let hours = parseInt(timeArray[0]);
+          const minutes = parseInt(timeArray[1]);
+  
+          const period = (hours >= 12) ? 'PM' : 'AM';
+  
+          if (hours === 0) {
+            hours = 12;
+          } else if (hours > 12) {
+            hours = hours - 12;
+          }
+  
+          stdTime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ' + period;
+  
+        }
+
+        return stdTime
+    }
+
     const { mutate: dateMutation, isLoading: dateIsLoading } = api.appointments.updateDate.useMutation({
         onSuccess: () => {
           setSelectedAppointment({
@@ -84,27 +109,28 @@ const Schedule: NextPage = () => {
           setCurrentEdit('')
         },
         onError: () => {
-          console.log('error')
+            modalErrors.date = 'select date'
+            setModalErrors(modalErrors)
         }
     })
 
     const { mutate: timeMutation, isLoading: timeIsLoading } = api.appointments.updateTime.useMutation({
         onSuccess: () => {
+          void ctx.appointments.getAll.invalidate()
           setSelectedAppointment({
             date: selectedAppointment.date,
-            time: updatedValue,
+            time: converTime(updatedValue),
             mltryTime: updatedValue,
             id: selectedAppointment.id,
             name: selectedAppointment.name
           })
-
-          void ctx.appointments.getAll.invalidate()
           toast.success('updated time!')
           setUpdatedValue('')
           setCurrentEdit('')
         },
         onError: () => {
-          console.log('error')
+            modalErrors.time = 'select time'
+            setModalErrors(modalErrors)
         }
     })
 
@@ -130,20 +156,20 @@ const Schedule: NextPage = () => {
 
     }
 
+    const date = new Date
+
+    const year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString(); // Months are zero-based
+    let day = (date.getDate()).toString();
+
+    month = parseInt(month) < 10 ? '0' + month : month;
+    day = parseInt(day) < 10 ? '0' + day : day;
+    const dayTomorrow = parseInt(day) + 1 < 10 ? '0' + (parseInt(day) + 1).toString() : (parseInt(day) + 1).toString();
+
+    const currentDate = `${year}-${month}-${day}`
+    const tomorrowDate = `${year}-${month}-${dayTomorrow}`
+
     const sortAppointments = () => {
-        const date = new Date
-
-        const year = date.getFullYear();
-        let month = (date.getMonth() + 1).toString(); // Months are zero-based
-        let day = (date.getDate()).toString();
-
-        month = parseInt(month) < 10 ? '0' + month : month;
-        day = parseInt(day) < 10 ? '0' + day : day;
-        const dayTomorrow = parseInt(day) + 1 < 10 ? '0' + (parseInt(day) + 1).toString() : (parseInt(day) + 1).toString();
-
-        const currentDate = `${year}-${month}-${day}`
-        const tomorrowDate = `${year}-${month}-${dayTomorrow}`
-
         const compare = (a: {client: string | undefined, date: string, time: string, mltryTime: string}, b: {client: string | undefined, date: string, time: string, mltryTime: string}) => {
             if (a.mltryTime < b.mltryTime){
                 return -1
@@ -165,6 +191,21 @@ const Schedule: NextPage = () => {
             } else {
                 futureAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime, id: appointment.appointment.id})
                 futureAppointments.sort(compare)
+                
+                futureAppointments.sort((a: {client: string | undefined, date: string, time: string, mltryTime: string}, b: {client: string | undefined, date: string, time: string, mltryTime: string}) => {
+                    const [year, month, day] = a.date.split('-')
+                    const [year2, month2, day2] = b.date.split('-')
+
+                    if (year && month && day){
+                        if (year2 && month2 && day2){
+                            const compareDate1 = new Date(parseInt(year), parseInt(month), parseInt(day)).getTime()
+                            const compareDate2 = new Date(parseInt(year2), parseInt(month2), parseInt(day2)).getTime()
+                            if (compareDate1 > compareDate2) return 1
+                            else if (compareDate1 < compareDate2) return -1
+                        }
+                    }
+                    return 0
+                })
             }
         })
     }
@@ -309,64 +350,81 @@ const Schedule: NextPage = () => {
                 </div>
             </div>
 
-            <dialog ref={ref}>
+            <dialog className={styles.dialog} ref={ref}>
                 <div className={styles.inner_modal}>
-                    <div className={styles.modal_info_slice}>
-                        <p style={{textDecoration: 'underline'}}>Client - </p>
-                        <span className={styles.modal_user_info}>{selectedAppointment.name}</span>
+                    <div className={styles.info_slice_container}>
+                        <div className={styles.modal_info_slice}>
+                            <p>Client - </p>
+                            <span className={styles.modal_user_info_name}>{selectedAppointment.name}</span>
+                        </div>
                     </div>
                     {currentEdit == 'date' ? 
-                    <div>
+                    <div className={styles.info_slice_container}>
                         <div className={styles.modal_info_slice}>
-                            <p style={{textDecoration: 'underline', marginRight: '5px'}}>Date - </p>
-                            <input type="date" placeholder={selectedAppointment.date} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                            <p style={{marginRight: '5px'}}>Date - </p>
+                            <input type="date" min={currentDate} placeholder={selectedAppointment.date} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                        </div>
+                        <div className={styles.info_update_buttons}>
                             <p className={styles.modal_info_save} onClick={() => dateMutation({
-                                id: selectedAppointment.id,
-                                date: updatedValue
-                            })}>save</p>
+                                    id: selectedAppointment.id,
+                                    date: updatedValue
+                                })}>save +</p>
                             <p className={styles.modal_info_cancel} onClick={() => {
                                 setModalErrors(initialModalErrors)
                                 setUpdatedValue('')
                                 setCurrentEdit('')
-                                }}>cancel</p>
+                                }}>cancel -</p>
                         </div>
-                        <span className={styles.modal_error}>{modalErrors.date != '' ? modalErrors.date : ''}</span>
+                        {modalErrors.date != '' ?
+                        <span className={styles.modal_error}>{modalErrors.date}</span>
+                        :
+                        null
+                        }
+                        {/* <span className={styles.modal_error}>{modalErrors.date != '' ? modalErrors.date : ''}</span> */}
                     </div>
                     :
-                    <div className={styles.modal_info_slice}>
-                        <p style={{textDecoration: 'underline'}}>Date - </p>
-                        <p className={styles.modal_user_info} onClick={() => {
-                        setModalErrors(initialModalErrors)
-                        setUpdatedValue('')
-                        setCurrentEdit('date')
-                        }}>{selectedAppointment.date}</p>
+                    <div className={styles.info_slice_container}>
+                        <div className={styles.modal_info_slice}>
+                            <p>Date - </p>
+                            <p className={styles.modal_user_info} onClick={() => {
+                            setModalErrors(initialModalErrors)
+                            setUpdatedValue('')
+                            setCurrentEdit('date')
+                            }}>{selectedAppointment.date}</p>
+                            <FaRegHandPointer className={styles.pointer_icon}/>
+                        </div>
                     </div>
                     }
                     {currentEdit == 'time' ? 
-                        <div>
+                        <div className={styles.info_slice_container}>
                             <div className={styles.modal_info_slice}>
-                                <p style={{textDecoration: 'underline', marginRight: '5px'}}>Time - </p>
+                                <span className={styles.modal_error}>{modalErrors.time != '' ? modalErrors.time : ''}</span>
+                                <p style={{marginRight: '5px'}}>Time - </p>
                                 <input type="time" placeholder={selectedAppointment.time} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                            </div>
+                            <div className={styles.info_update_buttons}>
                                 <p className={styles.modal_info_save} onClick={() => timeMutation({
-                                    id: selectedAppointment.id,
-                                    time: updatedValue
-                                })}>save</p>
+                                        id: selectedAppointment.id,
+                                        time: updatedValue
+                                    })}>save +</p>
                                 <p className={styles.modal_info_cancel} onClick={() => {
                                     setModalErrors(initialModalErrors)
                                     setUpdatedValue('')
                                     setCurrentEdit('')
-                                    }}>cancel</p>
-                            </div>
-                            <span className={styles.modal_error}>{modalErrors.time != '' ? modalErrors.time : ''}</span>            
+                                    }}>cancel -</p>
+                            </div>        
                         </div>
                     :
-                        <div className={styles.modal_info_slice}>
-                            <p style={{textDecoration: 'underline'}}>Time - </p>
-                            <p className={styles.modal_user_info} onClick={() => {
-                            setModalErrors(initialModalErrors)
-                            setUpdatedValue('')
-                            setCurrentEdit('time')
-                            }}>{selectedAppointment.time}</p>
+                        <div className={styles.info_slice_container}>
+                            <div className={styles.modal_info_slice}>
+                                <p>Time - </p>
+                                <p className={styles.modal_user_info} onClick={() => {
+                                setModalErrors(initialModalErrors)
+                                setUpdatedValue('')
+                                setCurrentEdit('time')
+                                }}>{selectedAppointment.time}</p>
+                            <FaRegHandPointer className={styles.pointer_icon}/>
+                            </div>
                         </div>
                     }
                         <button onClick={() => ref.current?.close()}>close</button>
