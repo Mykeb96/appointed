@@ -7,6 +7,8 @@ import { BiSearchAlt } from 'react-icons/bi'
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { FaRegHandPointer } from 'react-icons/fa'
+import { Toaster } from "react-hot-toast";
+import { FiLogOut } from 'react-icons/fi'
 
 interface appointmentSelected {
     date: string,
@@ -62,7 +64,6 @@ const Schedule: NextPage = () => {
     const [tomorrowSearch, setTomorrowSearch] = useState('')
     const [futureSearch, setFutureSearch] = useState('')
 
-    const [modalOpen, setModalOpen] = useState(false)
     const [selectedAppointment, setSelectedAppointment] = useState(defaultAppointment)
 
     const [currentEdit, setCurrentEdit] = useState('')
@@ -228,23 +229,117 @@ const Schedule: NextPage = () => {
              <span>Currently logged in as: {user.user?.username}</span>
              <SignOutButton />
             </div>
+            <FiLogOut className={styles.logout_icon} style={{display: 'none'}} />
 
-            <div className={styles.appointment_container}>
-                <div className={styles.appointment_container_header}>
-                    <span>Today&apos;s Appointments</span>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <BiSearchAlt />
-                        <input onChange={(e) => setTodaySearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
+            <div className={styles.secondary_container}>
+
+                <div className={styles.appointment_container}>
+                    <div className={styles.appointment_container_header}>
+                        <span>Today&apos;s Appointments</span>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            <BiSearchAlt />
+                            <input onChange={(e) => setTodaySearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
+                        </div>
+                    </div>
+
+                    <div>
+                        {todaysAppointments.length > 0 ?
+                            <div className={styles.appointment_list}>
+                                {todaySearch == '' ? 
+                                    todaysAppointments.map((appointment, key) => 
+                                        <div className={styles.appointment} key={key} onClick={() => {
+                                            setSelectedAppointment({
+                                                date: appointment.date,
+                                                time: appointment.time,
+                                                mltryTime: appointment.mltryTime,
+                                                id: appointment.id,
+                                                name: appointment.client
+                                            })
+                                            ref.current?.showModal()
+                                        }}>
+                                            <span>Client: {appointment.client}</span>
+                                            <span>Date: {appointment.date}</span>
+                                            <span>Time: {appointment.time}</span>
+                                        </div>
+                                )
+                                :   <div>
+                                        {todaysAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(todaySearch.toLocaleLowerCase())).map((appointment, key) => 
+                                            <div className={styles.appointment} key={key}>
+                                                <span>Client: {appointment.client}</span>
+                                                <span>Date: {appointment.date}</span>
+                                                <span>Time: {appointment.time}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                            }
+                            </div>
+                        :
+                            null
+                        }
                     </div>
                 </div>
 
-                <div>
-                    {todaysAppointments.length > 0 ?
-                        <div className={styles.appointment_list}>
-                            {todaySearch == '' ? 
-                                todaysAppointments.map((appointment, key) => 
+                <div className={styles.appointment_container}>
+                    <div className={styles.appointment_container_header}>
+                        <span>Tomorrow&apos;s Appointments</span>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            <BiSearchAlt />
+                            <input onChange={(e) => setTomorrowSearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
+                        </div>
+                    </div>
+
+                    <div>
+                        {tomorrowsAppointments.length > 0 ?
+                            <div className={styles.appointment_list}>
+                                {tomorrowSearch == '' ? 
+                                    tomorrowsAppointments.map((appointment, key) => 
+                                        <div className={styles.appointment} key={key} onClick={() => {
+                                            setSelectedAppointment({
+                                                date: appointment.date,
+                                                time: appointment.time,
+                                                mltryTime: appointment.mltryTime,
+                                                id: appointment.id,
+                                                name: appointment.client
+                                            })
+                                            ref.current?.showModal()
+                                        }}>
+                                            <span>Client: {appointment.client}</span>
+                                            <span>Date: {appointment.date}</span>
+                                            <span>Time: {appointment.time}</span>
+                                        </div>
+                                )
+                                :   <div>
+                                        {tomorrowsAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(tomorrowSearch.toLocaleLowerCase())).map((appointment, key) => 
+                                            <div className={styles.appointment} key={key}>
+                                                <span>Client: {appointment.client}</span>
+                                                <span>Date: {appointment.date}</span>
+                                                <span>Time: {appointment.time}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                }
+                            </div>
+                                :
+                                null
+                        }
+                    </div>
+                </div>
+
+                <div className={styles.appointment_container}>
+                    <div className={styles.appointment_container_header}>
+                        <span>Future Appointments</span>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            <BiSearchAlt />
+                            <input onChange={(e) => setFutureSearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
+                        </div>
+                    </div>
+
+                    <div>
+                        {futureAppointments.length > 0 ?
+                            <div className={styles.appointment_list}>
+                                {futureSearch == '' ? 
+                                futureAppointments.map((appointment, key) => 
                                     <div className={styles.appointment} key={key} onClick={() => {
-                                        console.log(appointment)
                                         setSelectedAppointment({
                                             date: appointment.date,
                                             time: appointment.time,
@@ -258,99 +353,28 @@ const Schedule: NextPage = () => {
                                         <span>Date: {appointment.date}</span>
                                         <span>Time: {appointment.time}</span>
                                     </div>
-                            )
-                            :   <div>
-                                    {todaysAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(todaySearch.toLocaleLowerCase())).map((appointment, key) => 
-                                        <div className={styles.appointment} key={key}>
-                                            <span>Client: {appointment.client}</span>
-                                            <span>Date: {appointment.date}</span>
-                                            <span>Time: {appointment.time}</span>
-                                        </div>
-                                    )}
-                                </div>
-                        }
-                        </div>
-                    :
-                        null
-                    }
-                </div>
-            </div>
-
-            <div className={styles.appointment_container}>
-                <div className={styles.appointment_container_header}>
-                    <span>Tomorrow&apos;s Appointments</span>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <BiSearchAlt />
-                        <input onChange={(e) => setTomorrowSearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
-                    </div>
-                </div>
-
-                <div>
-                    {tomorrowsAppointments.length > 0 ?
-                        <div className={styles.appointment_list}>
-                            {tomorrowSearch == '' ? 
-                                tomorrowsAppointments.map((appointment, key) => 
-                                    <div className={styles.appointment} key={key}>
-                                        <span>Client: {appointment.client}</span>
-                                        <span>Date: {appointment.date}</span>
-                                        <span>Time: {appointment.time}</span>
+                                )
+                                :   <div>
+                                        {futureAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(futureSearch.toLocaleLowerCase())).map((appointment, key) => 
+                                            <div className={styles.appointment} key={key}>
+                                                <span>Client: {appointment.client}</span>
+                                                <span>Date: {appointment.date}</span>
+                                                <span>Time: {appointment.time}</span>
+                                            </div>
+                                        )}
                                     </div>
-                            )
-                            :   <div>
-                                    {tomorrowsAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(tomorrowSearch.toLocaleLowerCase())).map((appointment, key) => 
-                                        <div className={styles.appointment} key={key}>
-                                            <span>Client: {appointment.client}</span>
-                                            <span>Date: {appointment.date}</span>
-                                            <span>Time: {appointment.time}</span>
-                                        </div>
-                                    )}
-                                </div>
                             }
-                        </div>
+                            </div>
                             :
                             null
-                    }
-                </div>
-            </div>
-
-            <div className={styles.appointment_container}>
-                <div className={styles.appointment_container_header}>
-                    <span>Future Appointments</span>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <BiSearchAlt />
-                        <input onChange={(e) => setFutureSearch(e.target.value)} className={styles.appointment_search} placeholder="Search by name..."/>
+                        }
                     </div>
                 </div>
 
-                <div>
-                    {futureAppointments.length > 0 ?
-                        <div className={styles.appointment_list}>
-                            {futureSearch == '' ? 
-                            futureAppointments.map((appointment, key) => 
-                                <div className={styles.appointment} key={key}>
-                                    <span>Client: {appointment.client}</span>
-                                    <span>Date: {appointment.date}</span>
-                                    <span>Time: {appointment.time}</span>
-                                </div>
-                            )
-                            :   <div>
-                                    {futureAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(futureSearch.toLocaleLowerCase())).map((appointment, key) => 
-                                        <div className={styles.appointment} key={key}>
-                                            <span>Client: {appointment.client}</span>
-                                            <span>Date: {appointment.date}</span>
-                                            <span>Time: {appointment.time}</span>
-                                        </div>
-                                    )}
-                                </div>
-                        }
-                        </div>
-                        :
-                        null
-                    }
-                </div>
             </div>
 
             <dialog className={styles.dialog} ref={ref}>
+                <Toaster position="top-right" />
                 <div className={styles.inner_modal}>
                     <div className={styles.info_slice_container}>
                         <div className={styles.modal_info_slice}>
@@ -365,10 +389,18 @@ const Schedule: NextPage = () => {
                             <input type="date" min={currentDate} placeholder={selectedAppointment.date} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
                         </div>
                         <div className={styles.info_update_buttons}>
-                            <p className={styles.modal_info_save} onClick={() => dateMutation({
-                                    id: selectedAppointment.id,
-                                    date: updatedValue
-                                })}>save +</p>
+                            <p className={styles.modal_info_save} onClick={() => {
+                                if (data.appointmentList.find(el => el.appointment.date == updatedValue && el.appointment.time == selectedAppointment.time) != undefined){
+                                    toast.error('Appointment already exists!')
+                                    
+                                } else {
+                                    dateMutation({
+                                        id: selectedAppointment.id,
+                                        date: updatedValue
+                                    })
+                                }
+                            }
+                                }>save +</p>
                             <p className={styles.modal_info_cancel} onClick={() => {
                                 setModalErrors(initialModalErrors)
                                 setUpdatedValue('')
@@ -380,7 +412,6 @@ const Schedule: NextPage = () => {
                         :
                         null
                         }
-                        {/* <span className={styles.modal_error}>{modalErrors.date != '' ? modalErrors.date : ''}</span> */}
                     </div>
                     :
                     <div className={styles.info_slice_container}>
@@ -398,21 +429,32 @@ const Schedule: NextPage = () => {
                     {currentEdit == 'time' ? 
                         <div className={styles.info_slice_container}>
                             <div className={styles.modal_info_slice}>
-                                <span className={styles.modal_error}>{modalErrors.time != '' ? modalErrors.time : ''}</span>
                                 <p style={{marginRight: '5px'}}>Time - </p>
                                 <input type="time" placeholder={selectedAppointment.time} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
                             </div>
                             <div className={styles.info_update_buttons}>
-                                <p className={styles.modal_info_save} onClick={() => timeMutation({
-                                        id: selectedAppointment.id,
-                                        time: updatedValue
-                                    })}>save +</p>
+                                <p className={styles.modal_info_save} onClick={() => {
+                                    if (data.appointmentList.find(el => el.appointment.date == selectedAppointment.date && el.appointment.mltryTime == updatedValue) != undefined){
+                                        toast.error('appointment already exists')
+                                    } else {
+                                        timeMutation({
+                                            id: selectedAppointment.id,
+                                            time: updatedValue
+                                        })
+                                    }
+                                }
+                                }>save +</p>
                                 <p className={styles.modal_info_cancel} onClick={() => {
                                     setModalErrors(initialModalErrors)
                                     setUpdatedValue('')
                                     setCurrentEdit('')
                                     }}>cancel -</p>
-                            </div>        
+                            </div>
+                            {modalErrors.time != '' ?
+                            <span className={styles.modal_error}>{modalErrors.time}</span>
+                            :
+                            null
+                            }        
                         </div>
                     :
                         <div className={styles.info_slice_container}>
@@ -423,11 +465,14 @@ const Schedule: NextPage = () => {
                                 setUpdatedValue('')
                                 setCurrentEdit('time')
                                 }}>{selectedAppointment.time}</p>
-                            <FaRegHandPointer className={styles.pointer_icon}/>
+                                <FaRegHandPointer className={styles.pointer_icon}/>
                             </div>
                         </div>
                     }
-                        <button onClick={() => ref.current?.close()}>close</button>
+                        <button onClick={() => {
+                            setUpdatedValue(updatedValue)
+                            ref.current?.close()
+                            }}>close</button>
                 </div>
             </dialog>
             
