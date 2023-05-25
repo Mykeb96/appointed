@@ -46,8 +46,15 @@ interface appointment {
 const initialModalErrors = {
     date: '',
     time: ''
-  }
+}
 
+interface sortedAppointment{
+    client: string | undefined, 
+    date: string, 
+    time: string, 
+    mltryTime: string, 
+    id: string
+}
 
 const Schedule: NextPage = () => {
 
@@ -56,9 +63,9 @@ const Schedule: NextPage = () => {
     const user = useUser();
     const ctx = api.useContext()
 
-    const todaysAppointments: {client: string | undefined, date: string, time: string, mltryTime: string, id: string}[] = []
-    const tomorrowsAppointments: {client: string | undefined, date: string, time: string, mltryTime: string, id: string}[] = []
-    const futureAppointments: {client: string | undefined, date: string, time: string, mltryTime: string, id: string}[] = []
+    const todaysAppointments: sortedAppointment[] = []
+    const tomorrowsAppointments: sortedAppointment[] = []
+    const futureAppointments: sortedAppointment[] = []
 
     const [todaySearch, setTodaySearch] = useState('')
     const [tomorrowSearch, setTomorrowSearch] = useState('')
@@ -70,6 +77,7 @@ const Schedule: NextPage = () => {
     const [updatedValue, setUpdatedValue] = useState('')
     const [modalErrors, setModalErrors] = useState(initialModalErrors)
 
+    // converts miltary time to standard time
     const converTime = (time: string) => {
         let stdTime = ''
 
@@ -141,6 +149,7 @@ const Schedule: NextPage = () => {
 
     if (!data) return <div>Something went wrong</div>
 
+    // takes an appointment and finds the first name of client
     const findUser = (appointment: appointment) => {
         const clientId = appointment.appointment.clientId
 
@@ -157,6 +166,7 @@ const Schedule: NextPage = () => {
 
     }
 
+    // formats today's and tomorrow's date for sorting
     const date = new Date
 
     const year = date.getFullYear();
@@ -170,8 +180,9 @@ const Schedule: NextPage = () => {
     const currentDate = `${year}-${month}-${day}`
     const tomorrowDate = `${year}-${month}-${dayTomorrow}`
 
+    // sorts appointments by time and day
     const sortAppointments = () => {
-        const compare = (a: {client: string | undefined, date: string, time: string, mltryTime: string}, b: {client: string | undefined, date: string, time: string, mltryTime: string}) => {
+        const compare = (a: sortedAppointment, b: sortedAppointment) => {
             if (a.mltryTime < b.mltryTime){
                 return -1
             }
@@ -193,7 +204,7 @@ const Schedule: NextPage = () => {
                 futureAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime, id: appointment.appointment.id})
                 futureAppointments.sort(compare)
                 
-                futureAppointments.sort((a: {client: string | undefined, date: string, time: string, mltryTime: string}, b: {client: string | undefined, date: string, time: string, mltryTime: string}) => {
+                futureAppointments.sort((a: sortedAppointment, b: sortedAppointment) => {
                     const [year, month, day] = a.date.split('-')
                     const [year2, month2, day2] = b.date.split('-')
 
@@ -220,14 +231,14 @@ const Schedule: NextPage = () => {
 
             <nav className={styles.navigation}>
                 <Link href='/schedule'><span>Home</span></Link>
-                <Link href='/'><span>Clients</span></Link>
+                <Link href='/clients'><span>Clients</span></Link>
                 <span>FAQ</span>
                 <span>Support</span>
             </nav>
 
             <div className={styles.user_logout}>
-             <span>Currently logged in as: {user.user?.username}</span>
-             <SignOutButton />
+                <span>Currently logged in as: {user.user?.username}</span>
+                <SignOutButton />
             </div>
             <FiLogOut className={styles.logout_icon} style={{display: 'none'}} />
 
@@ -262,15 +273,15 @@ const Schedule: NextPage = () => {
                                             <span>Time: {appointment.time}</span>
                                         </div>
                                 )
-                                :   <div>
-                                        {todaysAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(todaySearch.toLocaleLowerCase())).map((appointment, key) => 
-                                            <div className={styles.appointment} key={key}>
-                                                <span>Client: {appointment.client}</span>
-                                                <span>Date: {appointment.date}</span>
-                                                <span>Time: {appointment.time}</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                :       <div>
+                                            {todaysAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(todaySearch.toLocaleLowerCase())).map((appointment, key) => 
+                                                <div className={styles.appointment} key={key}>
+                                                    <span>Client: {appointment.client}</span>
+                                                    <span>Date: {appointment.date}</span>
+                                                    <span>Time: {appointment.time}</span>
+                                                </div>
+                                            )}
+                                        </div>
                             }
                             </div>
                         :
@@ -308,19 +319,19 @@ const Schedule: NextPage = () => {
                                             <span>Time: {appointment.time}</span>
                                         </div>
                                 )
-                                :   <div>
-                                        {tomorrowsAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(tomorrowSearch.toLocaleLowerCase())).map((appointment, key) => 
-                                            <div className={styles.appointment} key={key}>
-                                                <span>Client: {appointment.client}</span>
-                                                <span>Date: {appointment.date}</span>
-                                                <span>Time: {appointment.time}</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                :       <div>
+                                            {tomorrowsAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(tomorrowSearch.toLocaleLowerCase())).map((appointment, key) => 
+                                                <div className={styles.appointment} key={key}>
+                                                    <span>Client: {appointment.client}</span>
+                                                    <span>Date: {appointment.date}</span>
+                                                    <span>Time: {appointment.time}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                 }
                             </div>
-                                :
-                                null
+                            :
+                             null
                         }
                     </div>
                 </div>
@@ -338,31 +349,31 @@ const Schedule: NextPage = () => {
                         {futureAppointments.length > 0 ?
                             <div className={styles.appointment_list}>
                                 {futureSearch == '' ? 
-                                futureAppointments.map((appointment, key) => 
-                                    <div className={styles.appointment} key={key} onClick={() => {
-                                        setSelectedAppointment({
-                                            date: appointment.date,
-                                            time: appointment.time,
-                                            mltryTime: appointment.mltryTime,
-                                            id: appointment.id,
-                                            name: appointment.client
-                                        })
-                                        ref.current?.showModal()
-                                    }}>
-                                        <span>Client: {appointment.client}</span>
-                                        <span>Date: {appointment.date}</span>
-                                        <span>Time: {appointment.time}</span>
-                                    </div>
+                                    futureAppointments.map((appointment, key) => 
+                                        <div className={styles.appointment} key={key} onClick={() => {
+                                            setSelectedAppointment({
+                                                date: appointment.date,
+                                                time: appointment.time,
+                                                mltryTime: appointment.mltryTime,
+                                                id: appointment.id,
+                                                name: appointment.client
+                                            })
+                                            ref.current?.showModal()
+                                        }}>
+                                            <span>Client: {appointment.client}</span>
+                                            <span>Date: {appointment.date}</span>
+                                            <span>Time: {appointment.time}</span>
+                                        </div>
                                 )
-                                :   <div>
-                                        {futureAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(futureSearch.toLocaleLowerCase())).map((appointment, key) => 
-                                            <div className={styles.appointment} key={key}>
-                                                <span>Client: {appointment.client}</span>
-                                                <span>Date: {appointment.date}</span>
-                                                <span>Time: {appointment.time}</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                :       <div>
+                                            {futureAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(futureSearch.toLocaleLowerCase())).map((appointment, key) => 
+                                                <div className={styles.appointment} key={key}>
+                                                    <span>Client: {appointment.client}</span>
+                                                    <span>Date: {appointment.date}</span>
+                                                    <span>Time: {appointment.time}</span>
+                                                </div>
+                                            )}
+                                        </div>
                             }
                             </div>
                             :
@@ -400,7 +411,7 @@ const Schedule: NextPage = () => {
                                     })
                                 }
                             }
-                                }>save +</p>
+                            }>save +</p>
                             <p className={styles.modal_info_cancel} onClick={() => {
                                 setModalErrors(initialModalErrors)
                                 setUpdatedValue('')
@@ -408,9 +419,9 @@ const Schedule: NextPage = () => {
                                 }}>cancel -</p>
                         </div>
                         {modalErrors.date != '' ?
-                        <span className={styles.modal_error}>{modalErrors.date}</span>
-                        :
-                        null
+                            <span className={styles.modal_error}>{modalErrors.date}</span>
+                            :
+                            null
                         }
                     </div>
                     :
@@ -451,9 +462,9 @@ const Schedule: NextPage = () => {
                                     }}>cancel -</p>
                             </div>
                             {modalErrors.time != '' ?
-                            <span className={styles.modal_error}>{modalErrors.time}</span>
-                            :
-                            null
+                                <span className={styles.modal_error}>{modalErrors.time}</span>
+                                :
+                                null
                             }        
                         </div>
                     :
@@ -472,7 +483,7 @@ const Schedule: NextPage = () => {
                         <button onClick={() => {
                             setUpdatedValue(updatedValue)
                             ref.current?.close()
-                            }}>close</button>
+                        }}>close</button>
                 </div>
             </dialog>
             
