@@ -123,7 +123,7 @@
 
 .navigation > * {
     transition: 0.3s;
-    border: 1px solid white;
+    border: 2px solid white;
     padding: 5px 10px 5px 10px;
     margin: 5px 10px 5px 10px;
     border-radius: 4px;
@@ -140,8 +140,11 @@
     transition: 0.3s;
     cursor: pointer;
     /* background: #297984; */
-    background: #205d65;
-    text-decoration: underline !important;
+    /* background: #205d65; */
+    background: white;
+    border: 2px solid #297984;
+    color: #297984;
+    /* text-decoration: underline !important; */
 }
 
 .user_logout{
@@ -154,7 +157,7 @@
     letter-spacing: 2px;
     font-family: 'Roboto Condensed', sans-serif;
     background: #29798486;
-    border: 1px solid white;
+    border: 2px solid white;
     padding: 5px 10px 5px 10px;
     margin-right: 10px;
 }
@@ -164,11 +167,12 @@
 }
 
 .user_logout > :last-child{
+    transition: 0.3s;
     border-radius: 4px;
     color: white;
     font-weight: bold;
     letter-spacing: 2px;
-    border: 1px solid white;
+    border: 2px solid white;
     font-family: 'Roboto Condensed', sans-serif;
     background: transparent;
 }
@@ -176,7 +180,10 @@
 .user_logout > :last-child:hover {
     transition: 0.3s;
     cursor: pointer;
-    background: #205d65;
+    /* background: #205d65; */
+    background: white;
+    border: 2px solid #297984;
+    color: #297984;
 }
 
 .dialog {

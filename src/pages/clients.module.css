@@ -6,6 +6,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .navigation{
@@ -16,7 +17,7 @@
 
 .navigation > * {
     transition: 0.3s;
-    border: 1px solid white;
+    border: 2px solid white;
     padding: 5px 10px 5px 10px;
     margin: 5px 10px 5px 10px;
     border-radius: 4px;
@@ -32,9 +33,11 @@
 .navigation > *:hover{
     transition: 0.3s;
     cursor: pointer;
-    /* background: #297984; */
-    background: #205d65;
-    text-decoration: underline !important;
+    /* background: #205d65; */
+    background: white;
+    border: 2px solid #297984;
+    color: #297984;
+    /* text-decoration: underline !important; */
 }
 
 .user_logout{
@@ -47,7 +50,7 @@
     letter-spacing: 2px;
     font-family: 'Roboto Condensed', sans-serif;
     background: #29798486;
-    border: 1px solid white;
+    border: 2px solid white;
     padding: 5px 10px 5px 10px;
     margin-right: 10px;
 }
@@ -61,7 +64,7 @@
     color: white;
     font-weight: bold;
     letter-spacing: 2px;
-    border: 1px solid white;
+    border: 2px solid white;
     font-family: 'Roboto Condensed', sans-serif;
     background: transparent;
 }
@@ -70,4 +73,82 @@
     transition: 0.3s;
     cursor: pointer;
     background: #205d65;
+}
+
+.search_bar{
+    margin-bottom: 30px;
+}
+
+.client_list_container{
+    height: 600px;
+    width: 1100px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding-left: 50px;
+    padding-right: 50px;
+    overflow-y: scroll;
+}
+
+.client_list_container::-webkit-scrollbar{
+    width: 15px;
+
+}
+
+.client_list_container::-webkit-scrollbar-thumb{
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.13);}
+
+.client_list_header{
+    display: flex;
+    justify-content: flex-start;
+    font-family: 'Roboto Condensed', sans-serif;
+    margin-top: 10px;
+}
+
+.client_list_header > span {
+    white-space: nowrap;
+    text-decoration: underline;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 1.3em;
+}
+
+.client_firstName{
+    margin-left: 50px;
+}
+
+.client_lastName{
+    margin-left: 150px;
+}
+
+.client_phone{
+    margin-left: 155px;
+}
+
+.client_email{
+    margin-left: 175px;
+}
+
+.client{
+    transition: 0.5s;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin-top: 20px;
+    border-radius: 8px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.client:hover {
+    cursor: pointer;
+    transition: 0.5s;
+    background: rgba(255, 255, 255, 0.29);
+}
+
+.client > span {
+    font-size: 1.5em;
+    width: 250px;
 }
