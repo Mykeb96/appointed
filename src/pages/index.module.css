@@ -66,6 +66,7 @@
 
 .modal_info_slice{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px 0 20px 0;

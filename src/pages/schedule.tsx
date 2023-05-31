@@ -43,11 +43,6 @@ interface appointment {
     }
 }
 
-const initialModalErrors = {
-    date: '',
-    time: ''
-}
-
 interface sortedAppointment{
     client: string | undefined, 
     date: string, 
@@ -57,6 +52,19 @@ interface sortedAppointment{
 }
 
 const Schedule: NextPage = () => {
+
+    const initialModalErrors = {
+        date: '',
+        time: ''
+    }
+
+    if (process.browser){
+        const dialog = document.querySelector('dialog')
+    
+        dialog?.addEventListener('cancel', (event) => {
+          event.preventDefault()
+        })
+      }
 
     const ref = useRef<HTMLDialogElement>(null)
 
@@ -275,7 +283,16 @@ const Schedule: NextPage = () => {
                                 )
                                 :       <div>
                                             {todaysAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(todaySearch.toLocaleLowerCase())).map((appointment, key) => 
-                                                <div className={styles.appointment} key={key}>
+                                                <div className={styles.appointment} key={key} onClick={() => {
+                                                    setSelectedAppointment({
+                                                        date: appointment.date,
+                                                        time: appointment.time,
+                                                        mltryTime: appointment.mltryTime,
+                                                        id: appointment.id,
+                                                        name: appointment.client
+                                                    })
+                                                    ref.current?.showModal()
+                                                }}>
                                                     <span>Client: {appointment.client}</span>
                                                     <span>Date: {appointment.date}</span>
                                                     <span>Time: {appointment.time}</span>
@@ -321,7 +338,16 @@ const Schedule: NextPage = () => {
                                 )
                                 :       <div>
                                             {tomorrowsAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(tomorrowSearch.toLocaleLowerCase())).map((appointment, key) => 
-                                                <div className={styles.appointment} key={key}>
+                                                <div className={styles.appointment} key={key} onClick={() => {
+                                                    setSelectedAppointment({
+                                                        date: appointment.date,
+                                                        time: appointment.time,
+                                                        mltryTime: appointment.mltryTime,
+                                                        id: appointment.id,
+                                                        name: appointment.client
+                                                    })
+                                                    ref.current?.showModal()
+                                                }}>
                                                     <span>Client: {appointment.client}</span>
                                                     <span>Date: {appointment.date}</span>
                                                     <span>Time: {appointment.time}</span>
@@ -367,7 +393,16 @@ const Schedule: NextPage = () => {
                                 )
                                 :       <div>
                                             {futureAppointments.filter(e => e.client?.toLocaleLowerCase().startsWith(futureSearch.toLocaleLowerCase())).map((appointment, key) => 
-                                                <div className={styles.appointment} key={key}>
+                                                <div className={styles.appointment} key={key} onClick={() => {
+                                                    setSelectedAppointment({
+                                                        date: appointment.date,
+                                                        time: appointment.time,
+                                                        mltryTime: appointment.mltryTime,
+                                                        id: appointment.id,
+                                                        name: appointment.client
+                                                    })
+                                                    ref.current?.showModal()
+                                                }}>
                                                     <span>Client: {appointment.client}</span>
                                                     <span>Date: {appointment.date}</span>
                                                     <span>Time: {appointment.time}</span>
@@ -483,6 +518,7 @@ const Schedule: NextPage = () => {
                         <button onClick={() => {
                             setUpdatedValue(updatedValue)
                             ref.current?.close()
+                            setModalErrors(initialModalErrors)
                         }}>close</button>
                 </div>
             </dialog>

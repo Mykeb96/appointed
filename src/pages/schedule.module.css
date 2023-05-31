@@ -139,12 +139,9 @@
 .navigation > *:hover{
     transition: 0.3s;
     cursor: pointer;
-    /* background: #297984; */
-    /* background: #205d65; */
     background: white;
-    border: 2px solid #297984;
+    border: 2px solid white;
     color: #297984;
-    /* text-decoration: underline !important; */
 }
 
 .user_logout{
@@ -156,8 +153,6 @@
     font-weight: bold;
     letter-spacing: 2px;
     font-family: 'Roboto Condensed', sans-serif;
-    background: #29798486;
-    border: 2px solid white;
     padding: 5px 10px 5px 10px;
     margin-right: 10px;
 }
@@ -182,7 +177,7 @@
     cursor: pointer;
     /* background: #205d65; */
     background: white;
-    border: 2px solid #297984;
+    border: 2px solid white;
     color: #297984;
 }
 
@@ -256,7 +251,8 @@
 
 .modal_user_info:hover {
     cursor: pointer;
-    background: green;
+    background: limegreen;
+    border: 1px solid limegreen
 }
 
 

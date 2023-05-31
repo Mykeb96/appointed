@@ -35,7 +35,7 @@
     cursor: pointer;
     /* background: #205d65; */
     background: white;
-    border: 2px solid #297984;
+    border: 2px solid white;
     color: #297984;
     /* text-decoration: underline !important; */
 }
@@ -49,8 +49,8 @@
     font-weight: bold;
     letter-spacing: 2px;
     font-family: 'Roboto Condensed', sans-serif;
-    background: #29798486;
-    border: 2px solid white;
+    /* background: #29798486; */
+    /* border: 2px solid white; */
     padding: 5px 10px 5px 10px;
     margin-right: 10px;
 }
@@ -60,6 +60,7 @@
 }
 
 .user_logout > :last-child{
+    transition: 0.3s;
     border-radius: 4px;
     color: white;
     font-weight: bold;
@@ -72,11 +73,10 @@
 .user_logout > :last-child:hover {
     transition: 0.3s;
     cursor: pointer;
-    background: #205d65;
-}
-
-.search_bar{
-    margin-bottom: 30px;
+    /* background: #205d65; */
+    background: white;
+    border: 2px solid white;
+    color: #205d65;
 }
 
 .client_list_container{
@@ -91,7 +91,6 @@
 
 .client_list_container::-webkit-scrollbar{
     width: 15px;
-
 }
 
 .client_list_container::-webkit-scrollbar-thumb{
@@ -151,4 +150,275 @@
 .client > span {
     font-size: 1.5em;
     width: 250px;
+}
+
+.user_search {
+    background: none;
+    outline: none;
+    border: none;
+    color: white;
+    font-size: 1.3em;
+}
+
+.search_bar{
+    display: flex;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.search_bar > :first-child{
+    font-size: 1.3em;
+}
+
+.add_and_search{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.add_and_search > :last-child{
+    transition: 0.3s;
+    font-size: 2em;
+    margin-left: 15px;
+}
+
+.add_and_search > :last-child:hover{
+    cursor: pointer;
+    transition: 0.3s;
+    color: lime;
+}
+
+.dialog{
+    width: 400px;
+    height: 850px;
+    background: linear-gradient(180deg, #429EA6, #153B50);
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 4px;
+    color: white;
+    font-family: 'Roboto Condensed', sans-serif;
+    box-shadow: 10px 10px #204c50;
+}
+
+.dialog::backdrop{
+    background-color: rgba(0, 0, 0, 0.81);
+}
+
+.inner_dialog{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inner_dialog > button {
+    border: 1px solid white;
+    background: transparent;
+    width: fit-content !important;
+    color: white;
+    border-radius: 4px;
+    padding: 5px 15px 5px 15px;
+    margin-top: 20px !important;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.inner_dialog > h2 {
+    border-bottom: 2px dotted white;
+}
+
+.client_add_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 104px;
+    margin-bottom: 20px;
+    /* border-bottom: 2px dotted white;
+    padding-bottom: 20px; */
+}
+
+.client_add_input > input{
+    background: none;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 10px;
+    color: white;
+    font-size: 1.3em;
+    width: 75%;
+}
+
+.client_add_input > input:focus{
+    outline: none;
+}
+
+.dialog_error{
+    color: white;
+    font-weight: bold;
+    letter-spacing: 1px;
+    background: red;
+    border-radius: 4px;
+    padding: 5px 10px 5px 10px;
+    margin-top: 10px;
+    font-size: 0.8em;
+}
+
+.modal_button{
+    display: flex;
+    align-items: center;
+}
+
+.modal_button:hover{
+    cursor: pointer;
+}
+
+.submit:hover{
+    background: green;
+}
+
+.cancel:hover{
+    background: red;
+    border: 1px solid red;
+}
+
+.modal_info_slice{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0 20px 0;
+  }
+
+.modal_info_slice > p{
+    width: fit-content;
+}
+
+.modal_info_slice > :first-child{
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 1.5em;
+    border-bottom: 2px solid white;
+    margin-bottom: 5px;
+}
+
+.modal_user_info{
+    border: 1px solid limegreen;
+    padding: 4px 8px 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-size: 1.2em;
+}
+
+.modal_user_info:hover{
+    background: limegreen;
+    border: 1px solid limegreen;
+    cursor: pointer;
+}
+
+.modal_info_save{
+    border: 1px solid white;
+    padding: 2px 8px 2px 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+.modal_info_save:hover{
+    background: limegreen;
+    border: 1px solid limegreen;
+    cursor: pointer;
+}
+
+.modal_info_cancel{
+    border: 1px solid white;
+    padding: 2px 6px 2px 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+.modal_info_cancel:hover{
+    border: 1px solid red;
+    background: red;
+    cursor: pointer;
+}
+
+.inner_dialog_update{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inner_dialog_update > button {
+    border: 1px solid white;
+    background: transparent;
+    width: fit-content !important;
+    color: white;
+    border-radius: 4px;
+    padding: 5px 15px 5px 15px;
+    margin-top: 20px !important;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.inner_dialog_update > h2 {
+    border-bottom: 2px dotted white;
+    font-size: 2em;
+}
+
+.dialog_update{
+    width: 400px;
+    height: 700px;
+    background: linear-gradient(180deg, #429EA6, #153B50);
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 4px;
+    color: white;
+    font-family: 'Roboto Condensed', sans-serif;
+    box-shadow: 10px 10px #204c50;
+}
+
+.dialog_update::backdrop{
+    background-color: rgba(0, 0, 0, 0.81);
+}
+
+.dialog_buttons{
+    margin-top: 10px;
+    display: flex;
+}
+
+.modal_error{
+    color: white;
+    margin-top: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: 1px solid red;
+    border-radius: 4px;
+    padding: 0px 10px 0px 10px;
+    background: red;
+}
+
+.pointer_icon{
+    transform: rotate(-45deg);
+    font-size: 0.75em;
+}
+
+.modal_info_slice > input {
+    height: 25px;
+    font-size: 1em;
+    background: transparent;
+    color: white;
+    border: 1px solid limegreen;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.modal_info_slice > input::placeholder {
+    color: rgb(207, 207, 207);
+    text-align: center;
+}
+
+.modal_info_slice > input:focus {
+    outline: none;
 }
