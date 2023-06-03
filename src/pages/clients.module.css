@@ -561,4 +561,8 @@
     .client_list_header{
         display: none !important;
     }
+
+    .add_and_search{
+        display: none;
+    }
 }
