@@ -25,6 +25,8 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.8.0",
     "superjson": "1.12.2",
+    "sweetalert2": "^11.7.10",
+    "sweetalert2-react-content": "^5.0.7",
     "zod": "^3.21.4"
   },
   "devDependencies": {

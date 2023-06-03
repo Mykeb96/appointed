@@ -9,6 +9,8 @@ import { toast } from "react-hot-toast";
 import { FaRegHandPointer } from 'react-icons/fa'
 import { Toaster } from "react-hot-toast";
 import { FiLogOut } from 'react-icons/fi'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 interface appointmentSelected {
     date: string,
@@ -51,6 +53,7 @@ interface sortedAppointment{
     id: string
 }
 
+
 const Schedule: NextPage = () => {
 
     const initialModalErrors = {
@@ -64,8 +67,9 @@ const Schedule: NextPage = () => {
         dialog?.addEventListener('cancel', (event) => {
           event.preventDefault()
         })
-      }
+    }
 
+    const MySwal = withReactContent(Swal)
     const ref = useRef<HTMLDialogElement>(null)
 
     const user = useUser();
@@ -151,11 +155,19 @@ const Schedule: NextPage = () => {
         }
     })
 
+    const { mutate: deleteMutation, isLoading: deleteLoading } = api.appointments.delete.useMutation({
+        onSuccess: () => {
+            void ctx.appointments.getAll.invalidate()
+            
+        }
+    })
+
     const { data, isLoading } = api.appointments.getAll.useQuery();
 
     if (isLoading) return <div>Loading...</div>
 
     if (!data) return <div>Something went wrong</div>
+    
 
     // takes an appointment and finds the first name of client
     const findUser = (appointment: appointment) => {
@@ -166,12 +178,11 @@ const Schedule: NextPage = () => {
             const userExists = clientList?.find((el) => el.client.id == clientId)
 
             if (userExists) {
-                return userExists.client.firstName
+                return `${userExists.client.firstName} ${userExists.client.lastName}`
             } else {
-                return 'Cannot find client name'
+                return 'missing client'
             }
         }
-
     }
 
     // formats today's and tomorrow's date for sorting
@@ -520,6 +531,27 @@ const Schedule: NextPage = () => {
                             ref.current?.close()
                             setModalErrors(initialModalErrors)
                         }}>close</button>
+                        <button className={styles.delete_appointment} onClick={() => {
+                            ref.current?.close()
+                            Swal.fire({
+                              title: 'Are you sure?',
+                              text: "You won't be able to revert this!",
+                              icon: 'warning',
+                              showCancelButton: true,
+                              confirmButtonColor: '#3085d6',
+                              cancelButtonColor: '#d33',
+                              confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                deleteMutation(selectedAppointment.id)
+                                Swal.fire(
+                                  'Deleted!',
+                                  'Your appointment has been deleted.',
+                                  'success'
+                                ) 
+                              }
+                            })
+                        }}>Delete Appointment</button>
                 </div>
             </dialog>
             

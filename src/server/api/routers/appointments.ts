@@ -24,10 +24,10 @@ export const appointmentsRouter = createTRPCRouter({
           orderBy: {
             firstName: 'asc'
           }
-        });
+        })
 
         const clientList = clients.map((client) => {
-          const clientOf = users.find((user) => user.id === client.clientOf)
+        const clientOf = users.find((user) => user.id === client.clientOf)
 
           if (!clientOf) throw new TRPCError({ 
             code: "INTERNAL_SERVER_ERROR",
@@ -56,7 +56,16 @@ export const appointmentsRouter = createTRPCRouter({
         }
     })
 
-    
+    for (let i = 0; i < appointmentList.length; i++){
+      if (appointmentList[i]?.appointment.clientId == null){
+        const deleteAppointment = await ctx.prisma.appointment.delete({
+          where: {
+            id: appointmentList[i]?.appointment.id
+          }
+        })
+      }
+    }
+
     return {
       appointmentList,
       clientList

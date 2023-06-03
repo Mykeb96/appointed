@@ -12,6 +12,10 @@ const config = {
       parserOptions: {
         project: path.join(__dirname, "tsconfig.json"),
       },
+      rules: {
+        "@typescript-eslint/no-floating-promises": ["warn"],
+        "@typescript-eslint/no-non-null-assertion": ["off"]
+      }
     },
   ],
   parser: "@typescript-eslint/parser",
@@ -29,6 +33,7 @@ const config = {
       },
     ],
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    "@typescript-eslint/no-floating-promises": ["warn"]
   },
 };
 

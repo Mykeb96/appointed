@@ -135,4 +135,18 @@ export const clientsRouter = createTRPCRouter({
     })
   }),
 
+  updateNotes: privateProcedure.input(z.object({
+    id: z.string(),
+    notes: z.string()
+  })).mutation(async ({ctx, input}) => {
+    const updateClientNotes = await ctx.prisma.client.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        notes: input.notes
+      }
+    })
+  })
+
 });

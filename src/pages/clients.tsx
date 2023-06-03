@@ -11,6 +11,10 @@ import { BiSearchAlt } from 'react-icons/bi'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
 import { MdOutlineCancel } from 'react-icons/md'
 import { FaRegHandPointer } from 'react-icons/fa'
+import { TfiWrite } from 'react-icons/tfi'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import { Toaster } from "react-hot-toast";
 
 
 const Clients: NextPage = () => {
@@ -81,8 +85,11 @@ const Clients: NextPage = () => {
     time: ''
   }
 
+  const MySwal = withReactContent(Swal)
+
   const addClientDialog = useRef<HTMLDialogElement>(null)
   const updateClientDialog = useRef<HTMLDialogElement>(null)
+  const scheduleDialog = useRef<HTMLDialogElement>(null)
 
   const user = useUser();
   const ctx = api.useContext()
@@ -276,6 +283,24 @@ const Clients: NextPage = () => {
     }
   })
 
+  const { mutate: notesMutate } = api.clients.updateNotes.useMutation({
+    onSuccess: () => {
+      toast.success('Successfully updated client!')
+      void ctx.clients.getAll.invalidate()
+      setSelectedClient({
+        firstName: selectedClient.firstName,
+        lastName: selectedClient.lastName,
+        phone: selectedClient.phone,
+        email: selectedClient.email,
+        notes: updatedValue,
+        id: selectedClient.id
+      })
+      
+      setUpdatedValue('')
+      setCurrentEdit('')
+    }
+  })
+
   const date = new Date
 
   const year = date.getFullYear();
@@ -293,8 +318,6 @@ const Clients: NextPage = () => {
   if (isLoading) return <div>Loading...</div>
 
   if (!data) return <div>Something went wrong</div>
-
-  if (data) console.log(data)
 
     return (
       <div className={styles.main_container}>
@@ -343,8 +366,8 @@ const Clients: NextPage = () => {
                     }}>
                     <span>{client.client.firstName}</span>
                     <span>{client.client.lastName}</span>
-                    <span>{client.client.phone}</span>
-                    <span>{client.client.email}</span>
+                    <span className={styles.client_mobile}>{client.client.phone}</span>
+                    <span className={styles.client_mobile}>{client.client.email}</span>
                   </div>
                 )}
               </div>
@@ -365,8 +388,8 @@ const Clients: NextPage = () => {
                       }}>
                       <span>{client.client.firstName}</span>
                       <span>{client.client.lastName}</span>
-                      <span>{client.client.phone}</span>
-                      <span>{client.client.email}</span>
+                      <span className={styles.client_mobile}>{client.client.phone}</span>
+                      <span className={styles.client_mobile}>{client.client.email}</span>
                     </div>
                   </div> 
                 )}
@@ -404,7 +427,7 @@ const Clients: NextPage = () => {
             </div>
 
             <label />Notes &#40;Optional&#41;
-            <textarea style={{resize: 'none', width: '80%', fontSize: '1.3em'}} rows={6} value={input.notes} onChange={(e) => setInput({...input, notes: e.target.value})} />
+            <textarea className={styles.textarea} maxLength={50} style={{resize: 'none', width: '80%', fontSize: '1.3em'}} rows={6} value={input.notes} onChange={(e) => setInput({...input, notes: e.target.value})} />
 
             <button disabled={isAddingUser} className={`${styles.modal_button!} ${styles.submit!}`} onClick={() => {
             const upperCaseFirstName = `${input.firstName.charAt(0).toUpperCase()}${input.firstName.substring(1)}`
@@ -416,6 +439,7 @@ const Clients: NextPage = () => {
               email: input.email,
               notes: input.notes
             })
+            addClientDialog.current?.close()
             }}>Submit <AiOutlineCheckCircle style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
             <button className={`${styles.modal_button!} ${styles.cancel!}`} onClick={() => {
               addClientDialog.current?.close()
@@ -559,12 +583,103 @@ const Clients: NextPage = () => {
                 }}>{selectedClient.email}  <FaRegHandPointer className={styles.pointer_icon}/></p>
             </div>
           }
-            <p className={styles.user_notes}>Notes: {selectedClient.notes == '' ? <p>N/A</p> : selectedClient.notes}</p>
+          {currentEdit == 'notes' ? 
+            <div>
+              <div className={styles.modal_info_slice}>
+                <p>Notes</p>
+                <textarea maxLength={50} className={styles.textarea} rows={5} autoFocus={true} onChange={(e) => setUpdatedValue(e.target.value)}/>
+                <div className={styles.dialog_buttons}>
+                  <p className={styles.modal_info_save} onClick={() => notesMutate({
+                        id: selectedClient.id,
+                        notes: updatedValue
+                      })}>save</p>
+                  <p className={styles.modal_info_cancel} onClick={() => {
+                    setModalErrors(initialModalErrors)
+                    setUpdatedValue('')
+                    setCurrentEdit('')
+                    }}>cancel</p>
+                </div>
+              </div>
+            </div>
+          :
+            <div className={styles.modal_info_slice}>
+              <p>Notes</p>
+              <p className={`${styles.modal_user_info!} ${styles.notes!}`} onClick={() => {
+                setModalErrors(initialModalErrors)
+                setUpdatedValue('')
+                setCurrentEdit('notes')
+                }}>{selectedClient.notes == '' ? 'N/A' : selectedClient.notes}</p>
+            </div>
+          }
+            <button className={`${styles.modal_button!} ${styles.schedule!}`} onClick={() => {
+              updateClientDialog.current?.close()
+              scheduleDialog.current?.showModal()
+            }}>Schedule Appointment <TfiWrite style={{ marginLeft: '5px'}}/></button>
+
             <button className={`${styles.modal_button!} ${styles.cancel!}`} onClick={() => {
               setUpdatedValue('')
               updateClientDialog.current?.close()
               setModalErrors(initialModalErrors)
               }}>close <MdOutlineCancel style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
+
+            <button className={styles.delete_client} onClick={() => {
+              updateClientDialog.current?.close()
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  deleteMutate(selectedClient.id)
+                  Swal.fire(
+                    'Deleted!',
+                    'Your client has been deleted.',
+                    'success'
+                  )
+                }
+              })
+            }}>Delete Client</button>
+          </div>
+        </dialog>
+
+        <dialog className={styles.schedule_dialog} ref={scheduleDialog}>
+          <div className={styles.appointment_dialog}>
+            <div className={styles.appointment_input}>
+              <span className={styles.appointment_input_header}>Date</span>
+              <input type="date" min={currentDate} onChange={(e) => setAppointmentInfo({date: e.target.value, time: appointmentInfo.time})}/>
+              {appointmentErrors.date != '' ? 
+                <span className={styles.modal_error}>{appointmentErrors.date}</span>
+                :
+                null
+              }
+            </div>
+            <div className={styles.appointment_input}>
+              <span className={styles.appointment_input_header}>Time</span>
+              <input type="time" onChange={(e) => setAppointmentInfo({date: appointmentInfo.date, time: e.target.value})}/>
+              {appointmentErrors.time != '' ? 
+                <span className={styles.modal_error}>{appointmentErrors.time}</span>
+                :
+                null
+              }
+            </div>
+
+            <button className={`${styles.modal_button!} ${styles.submit!}`} style={{marginTop: '25px'}} onClick={() => {
+              appointmentMutate({
+              date: appointmentInfo.date,
+              time: appointmentInfo.time,
+              clientId: selectedClient.id
+              })
+              scheduleDialog.current?.close()
+            }}>Confirm appointment</button>
+
+            <button className={`${styles.modal_button!} ${styles.cancel!}`} onClick={() => {
+              scheduleDialog.current?.close()
+              setAppointmentErrors(initialAppointmentErrors)
+              }}>Close</button>
           </div>
         </dialog>
 

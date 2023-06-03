@@ -310,6 +310,18 @@
     background: red;
 }
 
+.delete_appointment{
+    margin-top: 20px;
+    border: 1px solid red !important;
+    background: red !important;
+}
+
+.delete_appointment:hover{
+    cursor: pointer;
+    background: rgb(141, 0, 0) !important;
+    border: 1px solid rgb(141, 0, 0) !important;
+}
+
 
 @media(max-width: 1271px){
     .secondary_container{

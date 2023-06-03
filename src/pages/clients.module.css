@@ -275,7 +275,8 @@
 }
 
 .submit:hover{
-    background: green;
+    background: limegreen;
+    border: 1px solid limegreen;
 }
 
 .cancel:hover{
@@ -366,11 +367,12 @@
 .inner_dialog_update > h2 {
     border-bottom: 2px dotted white;
     font-size: 2em;
+    margin: 0px;
 }
 
 .dialog_update{
     width: 400px;
-    height: 700px;
+    height: 900px;
     background: linear-gradient(180deg, #429EA6, #153B50);
     border: 1px solid rgb(255, 255, 255);
     border-radius: 4px;
@@ -421,4 +423,142 @@
 
 .modal_info_slice > input:focus {
     outline: none;
+}
+
+.delete_client{
+    border: 1px solid red !important;
+    background: red !important;
+}
+
+.delete_client:hover{
+    cursor: pointer;
+    background: rgb(141, 0, 0) !important;
+    border: 1px solid rgb(141, 0, 0) !important;
+}
+
+.schedule:hover{
+    background: limegreen;
+    border: 1px solid limegreen;
+}
+
+.modal_button:focus{
+    outline: none;
+}
+
+.schedule_dialog::backdrop{
+    background-color: rgba(0, 0, 0, 0.81);
+}
+
+.schedule_dialog{
+    width: 400px;
+    height: fit-content;
+    background: linear-gradient(180deg, #429EA6, #153B50);
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 4px;
+    color: white;
+    font-family: 'Roboto Condensed', sans-serif;
+    box-shadow: 10px 10px #204c50;
+}
+
+.appointment_dialog{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.appointment_dialog > button {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    border-radius: 4px;
+    padding: 5px 10px 5px 10px;
+    font-size: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.appointment_input > input {
+    background: transparent;
+    border: 1px solid white;
+    border-radius: 4px;
+    outline: none;
+    color: white;
+    width: 120px;
+    font-size: 1.3em;
+    padding: 5px 10px 5px 10px;
+
+}
+
+.appointment_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    height: 140px;
+}
+
+.appointment_input_header{
+    border-bottom: 2px dotted white;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.notes{
+    /* min-width: fit-content !important; */
+    max-width: 300px !important;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+    height: fit-content;
+    text-align: center;
+}
+
+.textarea{
+    resize: none;
+    width: 350px !important;
+}
+
+.textarea:focus{
+    outline: none;
+}
+
+@media(max-width: 1245px){
+
+    .client_list_container{
+        width: fit-content;
+        height: 1000px;
+    }
+
+    .client_mobile{
+        display: none;
+    }
+
+    .user_logout{
+        display: none;
+    }
+
+    .logout_icon{
+        display: block !important;
+        position: absolute;
+        right: 10px;
+        top: 6px;
+        font-size: 1.8em;
+    }
+
+    .logout_icon:hover{
+        color: red;
+    }
+
+    .client{
+        flex-direction: column;
+        height: 100px;
+        width: fit-content;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center;
+    }
+
+    .client_list_header{
+        display: none !important;
+    }
 }
