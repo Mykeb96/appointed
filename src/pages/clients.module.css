@@ -132,6 +132,7 @@
     transition: 0.5s;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin-top: 20px;
+    margin-bottom: 20px;
     border-radius: 8px;
     height: 50px;
     display: flex;
@@ -527,6 +528,8 @@
     .client_list_container{
         width: fit-content;
         height: 1000px;
+        margin-top: 60px;
+        margin-bottom: 60px;
     }
 
     .client_mobile{
@@ -564,5 +567,11 @@
 
     .add_and_search{
         display: none;
+    }
+}
+
+@media(max-width: 424px){
+    .navigation > * {
+        margin: 0px !important;
     }
 }
