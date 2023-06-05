@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap');
+
+.faq_container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.navigation{
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+.navigation > * {
+    transition: 0.3s;
+    border: 2px solid white;
+    padding: 5px 10px 5px 10px;
+    margin: 5px 10px 5px 10px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-family: 'Roboto Condensed', sans-serif;
+    background: #29798486;
+    text-decoration: none !important;
+
+}
+
+.navigation > *:hover{
+    transition: 0.3s;
+    cursor: pointer;
+    /* background: #205d65; */
+    background: white;
+    border: 2px solid white;
+    color: #297984;
+    /* text-decoration: underline !important; */
+}
+
+.user_logout{
+    position: absolute;
+    top: 10px;
+    right: 0;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-family: 'Roboto Condensed', sans-serif;
+    /* background: #29798486; */
+    /* border: 2px solid white; */
+    padding: 5px 10px 5px 10px;
+    margin-right: 10px;
+}
+
+.user_logout > * {
+    margin-right: 10px;
+}
+
+.user_logout > :last-child{
+    transition: 0.3s;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border: 2px solid white;
+    font-family: 'Roboto Condensed', sans-serif;
+    background: transparent;
+}
+
+.user_logout > :last-child:hover {
+    transition: 0.3s;
+    cursor: pointer;
+    /* background: #205d65; */
+    background: white;
+    border: 2px solid white;
+    color: #205d65;
+}
+
+@media(max-width: 941px){
+    .accordian{
+        width: 400px !important;
+    }
+}
+
+@media(max-width: 792px){
+    .user_logout{
+        display: none;
+    }
+
+    .logout_icon{
+        display: block !important;
+        position: absolute;
+        right: 10px;
+        top: 6px;
+        font-size: 1.8em;
+    }
+
+    .logout_icon:hover{
+        color: red;
+    }
+}
+
+@media(max-width: 423px){
+    .navigation > * {
+        margin: 0px !important;
+    }
+}

@@ -117,10 +117,11 @@ const Clients: NextPage = () => {
 
   const { mutate, isLoading: isAddingUser } = api.clients.create.useMutation({
     onSuccess: () => {
+      toast.success("Successfully added new client!")
       setInput(initialInput)
       setErrors(initialErrors)
       void ctx.clients.getAll.invalidate()
-      toast.success("Successfully added new client!")
+      addClientDialog.current?.close()
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
@@ -325,7 +326,7 @@ const Clients: NextPage = () => {
         <nav className={styles.navigation}>
             <Link href='/schedule'><span>Home</span></Link>
             <Link href='/clients'><span>Clients</span></Link>
-            <span>FAQ</span>
+            <Link href='/faq'><span>FAQ</span></Link>
             <span>Support</span>
         </nav>
 
@@ -399,6 +400,7 @@ const Clients: NextPage = () => {
         </div>
 
         <dialog className={styles.dialog} ref={addClientDialog}>
+          <Toaster position="top-right"/>
           <div className={styles.inner_dialog}>
             <h2>Add new client</h2>
 
@@ -432,14 +434,19 @@ const Clients: NextPage = () => {
             <button disabled={isAddingUser} className={`${styles.modal_button!} ${styles.submit!}`} onClick={() => {
             const upperCaseFirstName = `${input.firstName.charAt(0).toUpperCase()}${input.firstName.substring(1)}`
             const upperCaseLastName = `${input.lastName.charAt(0).toUpperCase()}${input.lastName.substring(1)}`
-            mutate({
-              firstName: upperCaseFirstName,
-              lastName: upperCaseLastName, 
-              phone: input.phone, 
-              email: input.email,
-              notes: input.notes
-            })
-            addClientDialog.current?.close()
+            // console.log(data)
+            if (data.find(el => el.client.firstName == upperCaseFirstName && el.client.lastName == upperCaseLastName) != undefined){
+              toast.error('Client already exists!')
+            } else {
+              mutate({
+                firstName: upperCaseFirstName,
+                lastName: upperCaseLastName, 
+                phone: input.phone, 
+                email: input.email,
+                notes: input.notes
+              })
+            }
+
             }}>Submit <AiOutlineCheckCircle style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
             <button className={`${styles.modal_button!} ${styles.cancel!}`} onClick={() => {
               addClientDialog.current?.close()

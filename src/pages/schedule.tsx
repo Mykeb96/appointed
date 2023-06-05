@@ -251,7 +251,7 @@ const Schedule: NextPage = () => {
             <nav className={styles.navigation}>
                 <Link href='/schedule'><span>Home</span></Link>
                 <Link href='/clients'><span>Clients</span></Link>
-                <span>FAQ</span>
+                <Link href='/faq'><span>FAQ</span></Link>
                 <span>Support</span>
             </nav>
 
