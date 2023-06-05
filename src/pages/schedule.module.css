@@ -365,5 +365,9 @@
     .appointment{
         width: 200px;
     }
+
+    .navigation > *{
+        margin: 0px !important;
+    }
     
 }
