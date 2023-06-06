@@ -15,10 +15,12 @@ import { TfiWrite } from 'react-icons/tfi'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Toaster } from "react-hot-toast";
+import { inputClasses } from "@mui/material";
 
 
 const Clients: NextPage = () => {
 
+ //prevents escape key on dialog elements
   if (process.browser){
     const dialog = document.querySelectorAll('dialog')
 
@@ -48,34 +50,7 @@ const Clients: NextPage = () => {
   notes: ''
   }
 
-  const newErrors = {
-  firstName: '',
-  lastName: '',
-  phone: '',
-  email: '',
-  notes: ''
-  }
-
-  const errorSetter = {
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-  }
-
-  const appointmentErrorSetter = {
-    date: '',
-    time: ''
-  }
-
-  const initialModalErrors = {
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-  }
-
-  const initialAppointmentInfo = {
+  const initialAppointmentInput = {
     date: '',
     time: ''
   }
@@ -91,9 +66,11 @@ const Clients: NextPage = () => {
   const updateClientDialog = useRef<HTMLDialogElement>(null)
   const scheduleDialog = useRef<HTMLDialogElement>(null)
 
-  const user = useUser();
+  const user = useUser()
   const ctx = api.useContext()
   const router = useRouter()
+
+  console.log(user.user?.id)
   
   const [input, setInput] = useState(initialInput)
   const [errors, setErrors] = useState(initialErrors)
@@ -109,13 +86,12 @@ const Clients: NextPage = () => {
 
   const [currentEdit, setCurrentEdit] = useState('')
   const [updatedValue, setUpdatedValue] = useState('')
-  const [modalErrors, setModalErrors] = useState(initialModalErrors)
+  const [modalErrors, setModalErrors] = useState(initialErrors)
 
-  const [toggleAppointmentInput, setToggleAppointmentInput] = useState(false)
-  const [appointmentInfo, setAppointmentInfo] = useState(initialAppointmentInfo)
+  const [appointmentInfo, setAppointmentInfo] = useState(initialAppointmentInput)
   const [appointmentErrors, setAppointmentErrors] = useState(initialAppointmentErrors)
 
-  const { mutate, isLoading: isAddingUser } = api.clients.create.useMutation({
+  const { mutate: clientMutate, isLoading: isAddingUser } = api.clients.create.useMutation({
     onSuccess: () => {
       toast.success("Successfully added new client!")
       setInput(initialInput)
@@ -127,26 +103,26 @@ const Clients: NextPage = () => {
       const errorMessage = e.data?.zodError?.fieldErrors
       console.log(errorMessage)
       if (errorMessage?.firstName && errorMessage.firstName[0]){
-        newErrors.firstName = 'Name must contain at least 2 character(s)'
+        initialErrors.firstName = 'Name must contain at least 2 character(s)'
       } else{
-        newErrors.firstName = ''
+        initialErrors.firstName = ''
       }
       if (e.data?.zodError?.fieldErrors.lastName && e.data?.zodError?.fieldErrors.lastName[0]){
-        newErrors.lastName = 'Name must contain at least 2 character(s)'
+        initialErrors.lastName = 'Name must contain at least 2 character(s)'
       } else{
-        newErrors.lastName = ''
+        initialErrors.lastName = ''
       }
       if (e.data?.zodError?.fieldErrors.phone && e.data?.zodError?.fieldErrors.phone[0]){
-        newErrors.phone = 'Phone # must contain exactly 10 character(s)'
+        initialErrors.phone = 'Phone # must contain exactly 10 character(s)'
       } else{
-        newErrors.phone = ''
+        initialErrors.phone = ''
       }
       if (e.data?.zodError?.fieldErrors.email && e.data?.zodError?.fieldErrors.email[0]){
-        newErrors.email = e.data?.zodError?.fieldErrors.email[0]
+        initialErrors.email = e.data?.zodError?.fieldErrors.email[0]
       } else{
-        newErrors.email = ''
+        initialErrors.email = ''
       }
-      setErrors(newErrors)
+      setErrors(initialErrors)
       toast.error("Failed to add client")
     }
   })
@@ -177,9 +153,9 @@ const Clients: NextPage = () => {
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
       if (errorMessage && errorMessage.firstName){
-        errorSetter.firstName = 'Name must contain at least 2 character(s)'
+        initialErrors.firstName = 'Name must contain at least 2 character(s)'
       }
-      setModalErrors(errorSetter)
+      setModalErrors(initialErrors)
       toast.error('Failed to update client')
     }
   })
@@ -203,9 +179,9 @@ const Clients: NextPage = () => {
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
       if (errorMessage && errorMessage.lastName){
-        errorSetter.lastName = 'Name must contain at least 2 character(s)'
+        initialErrors.lastName = 'Name must contain at least 2 character(s)'
       }
-      setModalErrors(errorSetter)
+      setModalErrors(initialErrors)
       toast.error('Failed to update client')
     }
   })
@@ -229,9 +205,9 @@ const Clients: NextPage = () => {
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
       if (errorMessage && errorMessage.phone){
-        errorSetter.phone = 'Phone # must contain exactly 10 character(s)'
+        initialErrors.phone = 'Phone # must contain exactly 10 character(s)'
       }
-      setModalErrors(errorSetter)
+      setModalErrors(initialErrors)
       toast.error('Failed to update client')
     }
   })
@@ -256,9 +232,9 @@ const Clients: NextPage = () => {
       const errorMessage = e.data?.zodError?.fieldErrors
       console.log(errorMessage)
       if (errorMessage && errorMessage.email){
-        errorSetter.email = 'Invalid email'
+        initialErrors.email = 'Invalid email'
       }
-      setModalErrors(errorSetter)
+      setModalErrors(initialErrors)
       toast.error('Failed to update client')
     }
   })
@@ -266,20 +242,19 @@ const Clients: NextPage = () => {
   const { mutate: appointmentMutate } = api.appointments.scheduleAppointment.useMutation({
     onSuccess: () => {
       setAppointmentErrors(initialAppointmentErrors)
-      setAppointmentInfo(initialAppointmentInfo)
-      setToggleAppointmentInput(false)
       toast.success('Added appointment')
+      scheduleDialog.current?.close()
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors
       if (errorMessage && errorMessage.date) {
-        appointmentErrorSetter.date = 'select date'
+        initialAppointmentErrors.date = 'select date'
       }
       if (errorMessage && errorMessage.time) {
-        appointmentErrorSetter.time = 'select time'
+        initialAppointmentErrors.time = 'select time'
       }
 
-      setAppointmentErrors(appointmentErrorSetter)
+      setAppointmentErrors(initialAppointmentErrors)
       toast.error('failed to schedule appointment')
     }
   })
@@ -302,6 +277,7 @@ const Clients: NextPage = () => {
     }
   })
 
+  // formats today's and tomorrow's date for sorting
   const date = new Date
 
   const year = date.getFullYear();
@@ -313,12 +289,15 @@ const Clients: NextPage = () => {
   const dayTomorrow = parseInt(day) + 1 < 10 ? '0' + (parseInt(day) + 1).toString() : (parseInt(day) + 1).toString();
 
   const currentDate = `${year}-${month}-${day}`
+  //
   
   const { data, isLoading } = api.clients.getAll.useQuery();
 
   if (isLoading) return <div>Loading...</div>
 
   if (!data) return <div>Something went wrong</div>
+
+  const filterDataForUser = data.filter((el) => el.clientOf.id === user.user?.id)
 
     return (
       <div className={styles.main_container}>
@@ -327,14 +306,14 @@ const Clients: NextPage = () => {
             <Link href='/schedule'><span>Home</span></Link>
             <Link href='/clients'><span>Clients</span></Link>
             <Link href='/faq'><span>FAQ</span></Link>
-            <span>Support</span>
+            <Link href='/support'><span>Support</span></Link>
         </nav>
 
         <div className={styles.user_logout}>
-            <span>Currently logged in as: {user.user?.username}</span>
+            <span>Currently logged in as: {user.user?.fullName}</span>
             <SignOutButton />
         </div>
-        <FiLogOut className={styles.logout_icon} style={{display: 'none'}} />
+        <SignOutButton><FiLogOut className={styles.logout_icon} style={{display: 'none'}} /></SignOutButton>
 
         <div className={styles.add_and_search}>
           <div className={styles.search_bar}>
@@ -353,7 +332,7 @@ const Clients: NextPage = () => {
             </div>
             {userSearch == '' ?
               <div className={styles.client_list}>
-                {data.map((client, key) => 
+                {filterDataForUser.map((client, key) => 
                   <div className={styles.client} key={key} onClick={() => {
                     setSelectedClient({
                       firstName: client.client.firstName,
@@ -400,7 +379,7 @@ const Clients: NextPage = () => {
         </div>
 
         <dialog className={styles.dialog} ref={addClientDialog}>
-          <Toaster position="top-right"/>
+          {addClientDialog.current?.open ? <Toaster position="top-right"/> : null}
           <div className={styles.inner_dialog}>
             <h2>Add new client</h2>
 
@@ -434,11 +413,11 @@ const Clients: NextPage = () => {
             <button disabled={isAddingUser} className={`${styles.modal_button!} ${styles.submit!}`} onClick={() => {
             const upperCaseFirstName = `${input.firstName.charAt(0).toUpperCase()}${input.firstName.substring(1)}`
             const upperCaseLastName = `${input.lastName.charAt(0).toUpperCase()}${input.lastName.substring(1)}`
-            // console.log(data)
+
             if (data.find(el => el.client.firstName == upperCaseFirstName && el.client.lastName == upperCaseLastName) != undefined){
               toast.error('Client already exists!')
             } else {
-              mutate({
+              clientMutate({
                 firstName: upperCaseFirstName,
                 lastName: upperCaseLastName, 
                 phone: input.phone, 
@@ -456,6 +435,7 @@ const Clients: NextPage = () => {
         </dialog>
 
         <dialog className={styles.dialog_update} ref={updateClientDialog} id="updateClientdialog">
+        {updateClientDialog.current?.open ? <Toaster position="top-right"/> : null}
           <div className={styles.inner_dialog_update}>
             <h2>Update Client</h2>
             {currentEdit == 'firstName' ? 
@@ -469,7 +449,7 @@ const Clients: NextPage = () => {
                       firstName: updatedValue
                     })}>save</p>
                     <p className={styles.modal_info_cancel} onClick={() => {
-                      setModalErrors(initialModalErrors)
+                      setModalErrors(initialErrors)
                       setUpdatedValue('')
                       setCurrentEdit('')
                       }}>cancel</p>
@@ -485,7 +465,7 @@ const Clients: NextPage = () => {
               <div className={styles.modal_info_slice}>
                 <p>First Name</p>
                   <p className={styles.modal_user_info} onClick={() => {
-                    setModalErrors(initialModalErrors)
+                    setModalErrors(initialErrors)
                     setUpdatedValue('')
                     setCurrentEdit('firstName')
                     }}>{selectedClient.firstName} <FaRegHandPointer className={styles.pointer_icon}/></p>
@@ -502,7 +482,7 @@ const Clients: NextPage = () => {
                       lastName: updatedValue
                     })}>save</p>
                     <p className={styles.modal_info_cancel} onClick={() => {
-                      setModalErrors(initialModalErrors)
+                      setModalErrors(initialErrors)
                       setUpdatedValue('')
                       setCurrentEdit('')
                       }}>cancel</p>
@@ -518,7 +498,7 @@ const Clients: NextPage = () => {
               <div className={styles.modal_info_slice}>
                 <p>Last Name</p>
                 <p className={styles.modal_user_info} onClick={() => {
-                  setModalErrors(initialModalErrors)
+                  setModalErrors(initialErrors)
                   setUpdatedValue('')
                   setCurrentEdit('lastName')
                   }}>{selectedClient.lastName}  <FaRegHandPointer className={styles.pointer_icon}/></p>
@@ -535,7 +515,7 @@ const Clients: NextPage = () => {
                         phone: updatedValue
                       })}>save</p>
                     <p className={styles.modal_info_cancel} onClick={() => {
-                      setModalErrors(initialModalErrors)
+                      setModalErrors(initialErrors)
                       setUpdatedValue('')
                       setCurrentEdit('')
                       }}>cancel</p>
@@ -551,7 +531,7 @@ const Clients: NextPage = () => {
               <div className={styles.modal_info_slice}>
                 <p>Phone #</p>
                 <p className={styles.modal_user_info} onClick={() => {
-                  setModalErrors(initialModalErrors)
+                  setModalErrors(initialErrors)
                   setUpdatedValue('')
                   setCurrentEdit('phone')
                   }}>{selectedClient.phone}  <FaRegHandPointer className={styles.pointer_icon}/></p>
@@ -568,7 +548,7 @@ const Clients: NextPage = () => {
                         email: updatedValue
                       })}>save</p>
                   <p className={styles.modal_info_cancel} onClick={() => {
-                    setModalErrors(initialModalErrors)
+                    setModalErrors(initialErrors)
                     setUpdatedValue('')
                     setCurrentEdit('')
                     }}>cancel</p>
@@ -584,7 +564,7 @@ const Clients: NextPage = () => {
             <div className={styles.modal_info_slice}>
               <p>Email</p>
               <p className={styles.modal_user_info} onClick={() => {
-                setModalErrors(initialModalErrors)
+                setModalErrors(initialErrors)
                 setUpdatedValue('')
                 setCurrentEdit('email')
                 }}>{selectedClient.email}  <FaRegHandPointer className={styles.pointer_icon}/></p>
@@ -601,7 +581,7 @@ const Clients: NextPage = () => {
                         notes: updatedValue
                       })}>save</p>
                   <p className={styles.modal_info_cancel} onClick={() => {
-                    setModalErrors(initialModalErrors)
+                    setModalErrors(initialErrors)
                     setUpdatedValue('')
                     setCurrentEdit('')
                     }}>cancel</p>
@@ -612,7 +592,7 @@ const Clients: NextPage = () => {
             <div className={styles.modal_info_slice}>
               <p>Notes</p>
               <p className={`${styles.modal_user_info!} ${styles.notes!}`} onClick={() => {
-                setModalErrors(initialModalErrors)
+                setModalErrors(initialErrors)
                 setUpdatedValue('')
                 setCurrentEdit('notes')
                 }}>{selectedClient.notes == '' ? 'N/A' : selectedClient.notes}</p>
@@ -621,16 +601,20 @@ const Clients: NextPage = () => {
             <button className={`${styles.modal_button!} ${styles.schedule!}`} onClick={() => {
               updateClientDialog.current?.close()
               scheduleDialog.current?.showModal()
+              setModalErrors(initialErrors)
             }}>Schedule Appointment <TfiWrite style={{ marginLeft: '5px'}}/></button>
 
             <button className={`${styles.modal_button!} ${styles.cancel!}`} onClick={() => {
               setUpdatedValue('')
               updateClientDialog.current?.close()
-              setModalErrors(initialModalErrors)
+              setModalErrors(initialErrors)
+              setCurrentEdit('')
               }}>close <MdOutlineCancel style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
 
             <button className={styles.delete_client} onClick={() => {
               updateClientDialog.current?.close()
+              setModalErrors(initialErrors)
+              setCurrentEdit('')
               Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -654,6 +638,7 @@ const Clients: NextPage = () => {
         </dialog>
 
         <dialog className={styles.schedule_dialog} ref={scheduleDialog}>
+          {scheduleDialog.current?.open ? <Toaster position="top-right"/> : null}
           <div className={styles.appointment_dialog}>
             <div className={styles.appointment_input}>
               <span className={styles.appointment_input_header}>Date</span>
@@ -680,13 +665,14 @@ const Clients: NextPage = () => {
               time: appointmentInfo.time,
               clientId: selectedClient.id
               })
-              scheduleDialog.current?.close()
-            }}>Confirm appointment</button>
+              setCurrentEdit('')
+            }}>Confirm appointment <AiOutlineCheckCircle style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
 
             <button className={`${styles.modal_button!} ${styles.cancel!}`} onClick={() => {
+              setCurrentEdit('')
               scheduleDialog.current?.close()
               setAppointmentErrors(initialAppointmentErrors)
-              }}>Close</button>
+              }}>Close <MdOutlineCancel style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
           </div>
         </dialog>
 

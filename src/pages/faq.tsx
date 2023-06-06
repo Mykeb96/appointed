@@ -80,14 +80,14 @@ const Faq: NextPage = () => {
             <Link href='/schedule'><span>Home</span></Link>
             <Link href='/clients'><span>Clients</span></Link>
             <Link href='/faq'><span>FAQ</span></Link>
-            <span>Support</span>
+            <Link href='/support'><span>Support</span></Link>
         </nav>
 
         <div className={styles.user_logout}>
-            <span>Currently logged in as: {user.user?.username}</span>
+            <span>Currently logged in as: {user.user?.fullName}</span>
             <SignOutButton />
         </div>
-        <FiLogOut className={styles.logout_icon} style={{display: 'none'}} />
+        <SignOutButton><FiLogOut className={styles.logout_icon} style={{display: 'none'}} /></SignOutButton>
 
         <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} className={styles.accordian}>
             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
@@ -137,7 +137,7 @@ const Faq: NextPage = () => {
             </AccordionSummary>
             <AccordionDetails>
                 <Typography style={{textAlign: 'center'}}>
-                    If an appointment is over an hour old from the scheduled time - it will automatically
+                    If an appointment is over a day old from the scheduled time - it will automatically
                     delete the expired appointment.
                 </Typography>
             </AccordionDetails>

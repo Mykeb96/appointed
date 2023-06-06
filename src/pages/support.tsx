@@ -15,14 +15,14 @@ const Support: NextPage = () => {
                 <Link href='/schedule'><span>Home</span></Link>
                 <Link href='/clients'><span>Clients</span></Link>
                 <Link href='/faq'><span>FAQ</span></Link>
-                <span>Support</span>
+                <Link href='/support'><span>Support</span></Link>
             </nav>
 
             <div className={styles.user_logout}>
-                <span>Currently logged in as: {user.user?.username}</span>
+                <span>Currently logged in as: {user.user?.fullName}</span>
                 <SignOutButton />
             </div>
-            <FiLogOut className={styles.logout_icon} style={{display: 'none'}} />
+            <SignOutButton><FiLogOut className={styles.logout_icon} style={{display: 'none'}} /></SignOutButton>
 
             <h1>Support</h1>
             <span>Be sure to check the FAQ first!</span>

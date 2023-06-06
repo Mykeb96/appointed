@@ -1,172 +1,56 @@
-.main{
-  display: flex;
-  justify-content: center;
+.home_container{
   height: 100vh;
   width: 100vw;
-}
-
-.authButton{
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.client_name{
-  border: 1px solid white;
-  padding: 4px 8px 4px 8px;
-  border-radius: 4px;
-  letter-spacing: 2px;
-}
-
-.client_name:hover{
-  color: limegreen;
-  cursor: pointer;
-  border: 1px solid limegreen;
-}
-
-.delete_client{
-  color: red;
-  margin-left: 15px;
-}
-
-.delete_client:hover{
-  cursor: pointer;
-}
-
-.modal_container{
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.202);
-  height: 100vh;
-  width: 100vw;
-}
-
-.inner_modal{
-  border: 1px solid white;
-  margin: auto;
-  margin-top: 75px;
-  width: 600px;
-  height: fit-content;
-  background: rgb(64 64 64);
-  border-radius: 4px;
-  color: white;
-}
-
-.close_modal{
-  font-size: 25px;
-  position: absolute;
-  margin: 2px 0px 0px 5px;
-}
-
-.close_modal:hover{
-  cursor: pointer;
-  color: red;
-}
-
-.modal_info_slice{
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px 0 20px 0;
 }
 
-.modal_user_info{
-  margin-left: 8px;
-  border: 1px solid white;
-  padding: 4px 8px 4px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-.modal_user_info:hover{
-  color: limegreen;
-  border: 1px solid limegreen;
-  cursor: pointer;
-}
-
-.modal_info_save{
-  border: 1px solid black;
-  padding: 2px 8px 2px 8px;
-  margin-left: 10px;
-  border-radius: 4px;
-}
-
-.modal_info_save:hover{
-  color: limegreen;
-  border: 1px solid limegreen;
-  cursor: pointer;
-}
-
-.modal_info_cancel{
-  border: 1px solid black;
-  padding: 2px 6px 2px 8px;
-  margin-left: 10px;
-  border-radius: 4px;
-}
-
-.modal_info_cancel:hover{
-  color: red;
-  border: 1px solid red;
-  cursor: pointer;
-}
-
-.modal_error{
-  color: red;
-  padding: 2px 12px 2px 12px;
-  border-radius: 8px;
-}
-
-.user_notes{
-  border: 1px solid white;
-  width: fit-content;
-  margin: auto;
-  border-radius: 4px;
-  padding: 5px 40px 5px 40px;
-}
-
-.modal_buttons{
+.headline{
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  align-items: flex-start;
+  margin-right: 100px;
+  margin-left: 100px;
 }
 
-.modal_buttons > button:hover {
-  cursor: pointer;
+.headline > h1{
+  font-size: 4em;
 }
 
-.modal_buttons > * {
-  width: fit-content;
-  margin: auto;
+.headline > h4{
+  font-size: 2em;
+  text-decoration: underline;
+}
+
+.headline > span{
+  font-size: 1.5em;
+}
+
+.headline > *{
+  margin: 10px;
+}
+
+.feature_info{
+  display: flex;
+  align-items: center;
   margin-top: 10px;
   margin-bottom: 10px;
+  font-size: 1.2em;
 }
 
-.appointment_modal{
-  display: flex;
-  flex-direction: column;
-  background: rgb(64 64 64);
-  width: 600px;
-  margin: auto;
-  margin-top: 50px;
+.headline > button{
+  border: 1px solid #4242B6;
+  background: #4242B6;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5em;
   border-radius: 4px;
-  border: 1px solid white;
+  padding: 2px 5px 2px 5px;
 }
 
-.appointment_modal > input {
-  width: 200px;
-  margin: auto;
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.appointment_modal > button{
-  width: fit-content;
-  margin: auto;
-  margin-bottom: 10px;
-}
-
-.appointment_modal > button:hover{
+.headline > button:hover{
   cursor: pointer;
+  background: #7f7cca;
+  border: 1px solid #7f7cca;
 }

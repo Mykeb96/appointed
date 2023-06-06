@@ -17,19 +17,21 @@
 }
 
 .anchor{
-    border: 1px solid white;
-    color: black;
-    background: white;
-    text-decoration: none;
+    border: 1px solid #4242B6;
+    color: white;
+    background: #4242B6;
+    text-decoration: none !important;
     border-radius: 4px;
     padding: 0px 20px 0px 20px;
     font-size: 2em;
-    /* box-shadow: 1px solid rgba(0, 0, 0, 0.125) !important; */
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.achor:hover{
+
+.anchor:hover{
     cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background: #7f7cca;
+    border: 1px solid #7f7cca;
 }
 
 .support_container > span {
@@ -62,11 +64,9 @@
 .navigation > *:hover{
     transition: 0.3s;
     cursor: pointer;
-    /* background: #205d65; */
     background: white;
     border: 2px solid white;
     color: #297984;
-    /* text-decoration: underline !important; */
 }
 
 .user_logout{
@@ -78,8 +78,6 @@
     font-weight: bold;
     letter-spacing: 2px;
     font-family: 'Roboto Condensed', sans-serif;
-    /* background: #29798486; */
-    /* border: 2px solid white; */
     padding: 5px 10px 5px 10px;
     margin-right: 10px;
 }
@@ -102,7 +100,6 @@
 .user_logout > :last-child:hover {
     transition: 0.3s;
     cursor: pointer;
-    /* background: #205d65; */
     background: white;
     border: 2px solid white;
     color: #205d65;

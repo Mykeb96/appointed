@@ -11,6 +11,7 @@ import { Toaster } from "react-hot-toast";
 import { FiLogOut } from 'react-icons/fi'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { MdOutlineCancel } from 'react-icons/md'
 
 interface appointmentSelected {
     date: string,
@@ -56,11 +57,15 @@ interface sortedAppointment{
 
 const Schedule: NextPage = () => {
 
+    const user = useUser()
+    const ctx = api.useContext()
+
     const initialModalErrors = {
         date: '',
         time: ''
     }
 
+    //disables escape key for dialog elements
     if (process.browser){
         const dialog = document.querySelector('dialog')
     
@@ -69,11 +74,16 @@ const Schedule: NextPage = () => {
         })
     }
 
+    //"refreshes" appointments
+    useEffect(() => {
+
+        return void ctx.appointments.getAll.invalidate()
+
+    }, [])
+    
+
     const MySwal = withReactContent(Swal)
     const ref = useRef<HTMLDialogElement>(null)
-
-    const user = useUser();
-    const ctx = api.useContext()
 
     const todaysAppointments: sortedAppointment[] = []
     const tomorrowsAppointments: sortedAppointment[] = []
@@ -158,7 +168,6 @@ const Schedule: NextPage = () => {
     const { mutate: deleteMutation, isLoading: deleteLoading } = api.appointments.delete.useMutation({
         onSuccess: () => {
             void ctx.appointments.getAll.invalidate()
-            
         }
     })
 
@@ -198,6 +207,9 @@ const Schedule: NextPage = () => {
 
     const currentDate = `${year}-${month}-${day}`
     const tomorrowDate = `${year}-${month}-${dayTomorrow}`
+    //
+
+    const filterDataForUser = data.appointmentList.filter(el => el.clientOf.id === user.user?.id)
 
     // sorts appointments by time and day
     const sortAppointments = () => {
@@ -210,8 +222,8 @@ const Schedule: NextPage = () => {
             }
             return 0
         }
-
-        data.appointmentList.map((appointment: appointment, key: number) => {
+        // data.appointmentList
+        filterDataForUser.map((appointment: appointment, key: number) => {
             if (appointment.appointment.date == currentDate){
                 todaysAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime, id: appointment.appointment.id})
                 todaysAppointments.sort(compare)
@@ -243,7 +255,9 @@ const Schedule: NextPage = () => {
 
     if (data) {
         sortAppointments()
+        console.log(data)
     }
+
 
     return (
         <div className={styles.main_container}>
@@ -252,14 +266,14 @@ const Schedule: NextPage = () => {
                 <Link href='/schedule'><span>Home</span></Link>
                 <Link href='/clients'><span>Clients</span></Link>
                 <Link href='/faq'><span>FAQ</span></Link>
-                <span>Support</span>
+                <Link href='/support'><span>Support</span></Link>
             </nav>
 
             <div className={styles.user_logout}>
-                <span>Currently logged in as: {user.user?.username}</span>
+                <span>Currently logged in as: {user.user?.fullName}</span>
                 <SignOutButton />
             </div>
-            <FiLogOut className={styles.logout_icon} style={{display: 'none'}} />
+            <SignOutButton><FiLogOut className={styles.logout_icon} style={{display: 'none'}} /></SignOutButton>
 
             <div className={styles.secondary_container}>
 
@@ -431,7 +445,7 @@ const Schedule: NextPage = () => {
             </div>
 
             <dialog className={styles.dialog} ref={ref}>
-                <Toaster position="top-right" />
+                {ref.current?.open ? <Toaster position="top-right"/> : null}
                 <div className={styles.inner_modal}>
                     <div className={styles.info_slice_container}>
                         <div className={styles.modal_info_slice}>
@@ -526,13 +540,16 @@ const Schedule: NextPage = () => {
                             </div>
                         </div>
                     }
-                        <button onClick={() => {
+                        <button className={styles.modal_button} onClick={() => {
                             setUpdatedValue(updatedValue)
+                            setCurrentEdit('')
                             ref.current?.close()
                             setModalErrors(initialModalErrors)
-                        }}>close</button>
-                        <button className={styles.delete_appointment} onClick={() => {
+                        }}>close <MdOutlineCancel style={{fontSize: '1.3em', marginLeft: '5px'}}/></button>
+                        <button className={`${styles.delete_appointment!} ${styles.modal_button!}`} onClick={() => {
                             ref.current?.close()
+                            setModalErrors(initialModalErrors)
+                            setCurrentEdit('')
                             Swal.fire({
                               title: 'Are you sure?',
                               text: "You won't be able to revert this!",

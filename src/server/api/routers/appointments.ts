@@ -1,8 +1,9 @@
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
-import type { User } from '@clerk/nextjs/dist/api'
+import type { User } from '@clerk/nextjs/dist/types/api'
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from '@trpc/server';
 import { z } from "zod";
+import { time, timeStamp } from "console";
 
 const filterUserForClient = (user: User) => {
     return {
@@ -29,10 +30,10 @@ export const appointmentsRouter = createTRPCRouter({
         const clientList = clients.map((client) => {
         const clientOf = users.find((user) => user.id === client.clientOf)
 
-          if (!clientOf) throw new TRPCError({ 
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Could not find who the client belongs to"
-            })
+          // if (!clientOf) throw new TRPCError({ 
+          //   code: "INTERNAL_SERVER_ERROR",
+          //   message: "Could not find who the client belongs to"
+          //   })
 
             return {
               client,
@@ -58,6 +59,39 @@ export const appointmentsRouter = createTRPCRouter({
 
     for (let i = 0; i < appointmentList.length; i++){
       if (appointmentList[i]?.appointment.clientId == null){
+        const deleteAppointment = await ctx.prisma.appointment.delete({
+          where: {
+            id: appointmentList[i]?.appointment.id
+          }
+        })
+      }
+    }
+
+    function convertStringToDateTimestamp(string: string) {
+      // Split the string into year, month, and day components
+      const parts = string.split('-');
+      const year = parseInt(parts[0]!);
+      const month = parseInt(parts[1]!) - 1; // Months are zero-based in JavaScript Date object
+      const day = parseInt(parts[2]!);
+    
+      // Create a new Date object with the specified year, month, and day
+      const date = new Date(year, month, day);
+    
+      return date;
+    }
+
+    for (let i = 0; i < appointmentList.length; i++){
+      const dateString = appointmentList[i]?.appointment.date
+      const timeStamp = convertStringToDateTimestamp(dateString!);
+
+      const currentTime = new Date();
+
+      // Subtract one day from the current time
+      const previousTime = new Date(currentTime);
+      previousTime.setDate(currentTime.getDate() - 1);
+      
+
+      if (timeStamp < previousTime){
         const deleteAppointment = await ctx.prisma.appointment.delete({
           where: {
             id: appointmentList[i]?.appointment.id

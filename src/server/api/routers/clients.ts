@@ -1,4 +1,4 @@
-import type { User } from '@clerk/nextjs/dist/api'
+import type { User } from '@clerk/nextjs/dist/types/api'
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from '@trpc/server';
 import { z } from "zod";
@@ -12,10 +12,10 @@ const filterUserForClient = (user: User) => {
   }
 }
 
-export const clientsRouter = createTRPCRouter({
-  
+export const clientsRouter = createTRPCRouter({  
  
   getAll: publicProcedure.query(async ({ ctx }) => {
+
     const clients = await ctx.prisma.client.findMany({
       orderBy: {
         firstName: 'asc'
@@ -25,6 +25,7 @@ export const clientsRouter = createTRPCRouter({
     const users = (await clerkClient.users.getUserList({
       userId: clients.map((client) => client.clientOf)
     })).map(filterUserForClient)
+
 
     return clients.map((client) => {
 

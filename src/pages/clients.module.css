@@ -33,11 +33,9 @@
 .navigation > *:hover{
     transition: 0.3s;
     cursor: pointer;
-    /* background: #205d65; */
     background: white;
     border: 2px solid white;
     color: #297984;
-    /* text-decoration: underline !important; */
 }
 
 .user_logout{
@@ -49,8 +47,6 @@
     font-weight: bold;
     letter-spacing: 2px;
     font-family: 'Roboto Condensed', sans-serif;
-    /* background: #29798486; */
-    /* border: 2px solid white; */
     padding: 5px 10px 5px 10px;
     margin-right: 10px;
 }
@@ -73,7 +69,6 @@
 .user_logout > :last-child:hover {
     transition: 0.3s;
     cursor: pointer;
-    /* background: #205d65; */
     background: white;
     border: 2px solid white;
     color: #205d65;
@@ -237,8 +232,6 @@
     width: 100%;
     height: 104px;
     margin-bottom: 20px;
-    /* border-bottom: 2px dotted white;
-    padding-bottom: 20px; */
 }
 
 .client_add_input > input{
@@ -487,7 +480,6 @@
     width: 120px;
     font-size: 1.3em;
     padding: 5px 10px 5px 10px;
-
 }
 
 .appointment_input{
@@ -506,7 +498,6 @@
 }
 
 .notes{
-    /* min-width: fit-content !important; */
     max-width: 300px !important;
     overflow-x: hidden;
     overflow-wrap: break-word;
@@ -528,7 +519,6 @@
     .client_list_container{
         width: fit-content;
         height: 1000px;
-        margin-top: 60px;
         margin-bottom: 60px;
     }
 
@@ -566,7 +556,7 @@
     }
 
     .add_and_search{
-        display: none;
+        margin-top: 60px;
     }
 }
 
