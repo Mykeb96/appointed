@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const router = useRouter()
 
     if (user.isSignedIn){
-      router.push('http://localhost:3000/schedule')
+      router.push('/schedule')
     }
 
 
