@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const router = useRouter()
 
     if (user.isSignedIn){
-      // router.push('/schedule')
+      router.push('/schedule')
     }
 
 
