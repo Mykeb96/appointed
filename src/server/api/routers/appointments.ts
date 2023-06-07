@@ -85,9 +85,8 @@ export const appointmentsRouter = createTRPCRouter({
     // Check if appointment is 1 day past the scheduled date, and delete it if so
     for (let i = 0; i < appointmentList.length; i++){
       const dateString = appointmentList[i]?.appointment.date
-      const dateStamp = convertStringToDateTimestamp(dateString!);
 
-      if (dateStamp < new Date()){
+      if (convertStringToDateTimestamp(dateString!) < new Date()){
         const deleteAppointment = await ctx.prisma.appointment.delete({
           where: {
             id: appointmentList[i]?.appointment.id
