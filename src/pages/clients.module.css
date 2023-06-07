@@ -569,4 +569,8 @@
     .navigation > * {
         margin: 0px !important;
     }
+
+    .client_list_container{
+        width: 250px !important;
+    }
 }
