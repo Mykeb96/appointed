@@ -72,7 +72,7 @@ export const appointmentsRouter = createTRPCRouter({
       const parts = string.split('-');
       const year = parseInt(parts[0]!);
       const month = parseInt(parts[1]!) - 1; // Months are zero-based in JavaScript Date object
-      const day = parseInt(parts[2]!) + 1;
+      const day = parseInt(parts[2]!) + 2;
     
       // Create a new Date object with the specified year, month, and day
       const date = new Date(year, month, day);
@@ -91,8 +91,6 @@ export const appointmentsRouter = createTRPCRouter({
             id: appointmentList[i]?.appointment.id
           }
         })
-      } else {
-        null
       }
     }
 
