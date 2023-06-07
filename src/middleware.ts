@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 export default authMiddleware({
   afterAuth(auth, req, evt) {
     if (!auth.userId){
-      return NextResponse.redirect('https://appointed.vercel.app/')
+      return NextResponse.redirect('https://appointed.work/')
     } else {
       NextResponse.next()
     }
