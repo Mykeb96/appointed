@@ -211,6 +211,27 @@ const Schedule: NextPage = () => {
 
     const filterDataForUser = data.appointmentList.filter(el => el.clientOf.id === user.user?.id)
 
+    function convertStringToDateTimestamp(string: string) {
+        // Split the string into year, month, and day components
+        const parts = string.split('-');
+        const year = parseInt(parts[0]!);
+        const month = parseInt(parts[1]!) - 1; // Months are zero-based in JavaScript Date object
+        const day = parseInt(parts[2]!) + 1;
+      
+        // Create a new Date object with the specified year, month, and day
+        const date = new Date(year, month, day);
+      
+        return date;
+      }
+
+    //   console.log(convertStringToDateTimestamp('2023-05-13'))
+
+      if (convertStringToDateTimestamp('2023-06-06') < new Date()){
+        console.log('its in the past')
+      } else {
+        console.log('its in the future')
+      }
+
     // sorts appointments by time and day
     const sortAppointments = () => {
         const compare = (a: sortedAppointment, b: sortedAppointment) => {

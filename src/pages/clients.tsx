@@ -69,8 +69,6 @@ const Clients: NextPage = () => {
   const user = useUser()
   const ctx = api.useContext()
   const router = useRouter()
-
-  console.log(user.user?.id)
   
   const [input, setInput] = useState(initialInput)
   const [errors, setErrors] = useState(initialErrors)

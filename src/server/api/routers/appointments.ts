@@ -57,6 +57,7 @@ export const appointmentsRouter = createTRPCRouter({
         }
     })
 
+    // Delete appointments for clients that no longer exist
     for (let i = 0; i < appointmentList.length; i++){
       if (appointmentList[i]?.appointment.clientId == null){
         const deleteAppointment = await ctx.prisma.appointment.delete({
@@ -72,7 +73,7 @@ export const appointmentsRouter = createTRPCRouter({
       const parts = string.split('-');
       const year = parseInt(parts[0]!);
       const month = parseInt(parts[1]!) - 1; // Months are zero-based in JavaScript Date object
-      const day = parseInt(parts[2]!);
+      const day = parseInt(parts[2]!) + 1;
     
       // Create a new Date object with the specified year, month, and day
       const date = new Date(year, month, day);
@@ -80,18 +81,13 @@ export const appointmentsRouter = createTRPCRouter({
       return date;
     }
 
+
+    // Check if appointment is 1 day past the scheduled date, and delete it if so
     for (let i = 0; i < appointmentList.length; i++){
       const dateString = appointmentList[i]?.appointment.date
-      const timeStamp = convertStringToDateTimestamp(dateString!);
+      const dateStamp = convertStringToDateTimestamp(dateString!);
 
-      const currentTime = new Date();
-
-      // Subtract one day from the current time
-      const previousTime = new Date(currentTime);
-      previousTime.setDate(currentTime.getDate() - 1);
-      
-
-      if (timeStamp < previousTime){
+      if (dateStamp < new Date()){
         const deleteAppointment = await ctx.prisma.appointment.delete({
           where: {
             id: appointmentList[i]?.appointment.id
