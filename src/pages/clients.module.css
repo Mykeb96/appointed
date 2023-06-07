@@ -7,6 +7,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 .navigation{
@@ -557,6 +558,10 @@
 
     .add_and_search{
         margin-top: 60px;
+    }
+
+    .search_bar > input {
+        width: 170px !important;
     }
 }
 
