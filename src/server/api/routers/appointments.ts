@@ -91,6 +91,8 @@ export const appointmentsRouter = createTRPCRouter({
             id: appointmentList[i]?.appointment.id
           }
         })
+      } else {
+        null
       }
     }
 

@@ -224,7 +224,7 @@ const Schedule: NextPage = () => {
         return date;
       }
 
-      console.log(convertStringToDateTimestamp('2023-06-06'))
+    //   console.log(convertStringToDateTimestamp('2023-06-06'))
 
       if (convertStringToDateTimestamp('2023-06-06') < new Date()){
         console.log('its in the past')
