@@ -88,6 +88,7 @@ const Schedule: NextPage = () => {
     const todaysAppointments: sortedAppointment[] = []
     const tomorrowsAppointments: sortedAppointment[] = []
     const futureAppointments: sortedAppointment[] = []
+    const expiredAppointments: sortedAppointment[] = []
 
     const [todaySearch, setTodaySearch] = useState('')
     const [tomorrowSearch, setTomorrowSearch] = useState('')
@@ -204,9 +205,11 @@ const Schedule: NextPage = () => {
     month = parseInt(month) < 10 ? '0' + month : month;
     day = parseInt(day) < 10 ? '0' + day : day;
     const dayTomorrow = parseInt(day) + 1 < 10 ? '0' + (parseInt(day) + 1).toString() : (parseInt(day) + 1).toString();
+    const yesterday = parseInt(day) - 1 < 10 ? '0' + (parseInt(day) - 1).toString() : (parseInt(day) + - 1).toString();
 
     const currentDate = `${year}-${month}-${day}`
     const tomorrowDate = `${year}-${month}-${dayTomorrow}`
+    const yesterdayDate = `${year}-${month}-${yesterday}`
     //
 
     const filterDataForUser = data.appointmentList.filter(el => el.clientOf.id === user.user?.id)
@@ -252,6 +255,8 @@ const Schedule: NextPage = () => {
             } else if (appointment.appointment.date == tomorrowDate) {
                 tomorrowsAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime, id: appointment.appointment.id})
                 tomorrowsAppointments.sort(compare)
+            } else if (appointment.appointment.date == yesterdayDate){
+                expiredAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime, id: appointment.appointment.id})
             } else {
                 futureAppointments.push({client: findUser(appointment), date: appointment.appointment.date, time: appointment.appointment.time, mltryTime: appointment.appointment.mltryTime, id: appointment.appointment.id})
                 futureAppointments.sort(compare)
