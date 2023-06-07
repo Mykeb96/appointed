@@ -16,6 +16,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Toaster } from "react-hot-toast";
 import { inputClasses } from "@mui/material";
+import Head from "next/head";
 
 
 const Clients: NextPage = () => {
@@ -297,8 +298,16 @@ const Clients: NextPage = () => {
 
   const filterDataForUser = data.filter((el) => el.clientOf.id === user.user?.id)
 
+  console.log(filterDataForUser)
+
     return (
+      
       <div className={styles.main_container}>
+        <Head>
+          <title>Clients</title>
+          <meta name="description" content="Manage clients" />
+          <link rel="icon" href="/icon.png" />
+        </Head>
           
         <nav className={styles.navigation}>
             <Link href='/schedule'><span>Home</span></Link>

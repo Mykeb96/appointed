@@ -12,6 +12,7 @@ import { FiLogOut } from 'react-icons/fi'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { MdOutlineCancel } from 'react-icons/md'
+import Head from "next/head";
 
 interface appointmentSelected {
     date: string,
@@ -287,6 +288,11 @@ const Schedule: NextPage = () => {
 
     return (
         <div className={styles.main_container}>
+            <Head>
+            <title>Schedule</title>
+            <meta name="description" content="Manage appointments" />
+            <link rel="icon" href="/icon.png" />
+            </Head>
 
             <nav className={styles.navigation}>
                 <Link href='/schedule'><span>Home</span></Link>

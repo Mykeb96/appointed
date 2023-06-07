@@ -11,8 +11,7 @@ import Typography from '@mui/material/Typography';
 import styles from './faq.module.css'
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { FiLogOut } from 'react-icons/fi'
-
-
+import Head from "next/head";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -73,6 +72,11 @@ const Faq: NextPage = () => {
 
     return (
         <div className={styles.faq_container}>
+          <Head>
+            <title>FAQ</title>
+            <meta name="description" content="FAQ" />
+            <link rel="icon" href="/icon.png" />
+          </Head>
 
         <h1 style={{borderBottom: '2px dotted white'}}>FAQ</h1>
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { FiLogOut } from 'react-icons/fi'
 import styles from './support.module.css'
-
+import Head from "next/head";
 
 const Support: NextPage = () => {
 
@@ -11,6 +11,13 @@ const Support: NextPage = () => {
 
     return(
         <div className={styles.support_container}>
+
+            <Head>
+            <title>Support</title>
+            <meta name="description" content="Support" />
+            <link rel="icon" href="/icon.png" />
+            </Head>
+
             <nav className={styles.navigation}>
                 <Link href='/schedule'><span>Home</span></Link>
                 <Link href='/clients'><span>Clients</span></Link>
