@@ -16,6 +16,7 @@
 
 .headline > h1{
   font-size: 4em;
+  width: fit-content !important;
 }
 
 .headline > h4{
@@ -40,7 +41,7 @@
 }
 
 .features{
-  width: 500px;
+  width: fit-content;
 }
 
 .headline > button{
@@ -51,6 +52,7 @@
   font-size: 1.5em;
   border-radius: 4px;
   padding: 2px 5px 2px 5px;
+  margin-top: 10px;
 }
 
 .headline > button:hover{
@@ -67,5 +69,26 @@
 
   .home_image{
     display: none;
+  }
+}
+
+@media(max-width: 523px){
+
+  .headline{
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .headline > h1 {
+    text-align: center;
+  }
+
+  .headline > span{
+    text-align: center;
+  }
+
+  .home_container{
+    /* width: 50vw; */
+    /* margin: auto; */
   }
 }
