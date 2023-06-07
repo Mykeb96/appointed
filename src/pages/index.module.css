@@ -36,7 +36,11 @@
   align-items: center;
   margin-top: 10px;
   margin-bottom: 10px;
-  font-size: 1.2em;
+  font-size: 1.2em !important;
+}
+
+.features{
+  width: 500px;
 }
 
 .headline > button{
@@ -53,4 +57,15 @@
   cursor: pointer;
   background: #7f7cca;
   border: 1px solid #7f7cca;
+}
+
+@media(max-width: 1623px){
+
+  .headline{
+    margin: 0;
+  }
+
+  .home_image{
+    display: none;
+  }
 }

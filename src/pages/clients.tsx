@@ -640,7 +640,7 @@ const Clients: NextPage = () => {
           <div className={styles.appointment_dialog}>
             <div className={styles.appointment_input}>
               <span className={styles.appointment_input_header}>Date</span>
-              <input type="date" onChange={(e) => setAppointmentInfo({date: e.target.value, time: appointmentInfo.time})}/>
+              <input type="date" min={currentDate} onChange={(e) => setAppointmentInfo({date: e.target.value, time: appointmentInfo.time})}/>
               {appointmentErrors.date != '' ? 
                 <span className={styles.modal_error}>{appointmentErrors.date}</span>
                 :

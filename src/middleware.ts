@@ -5,11 +5,11 @@ import { NextRequest } from "next/server";
  
 export default authMiddleware({
   afterAuth(auth, req, evt) {
-    // if (!auth.userId){
-    //   return NextResponse.redirect('https://appointed.vercel.app/')
-    // } else {
-    //   NextResponse.next()
-    // }
+    if (!auth.userId){
+      return NextResponse.redirect('https://appointed.vercel.app/')
+    } else {
+      NextResponse.next()
+    }
     NextResponse.next()
   },
 });

@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const router = useRouter()
 
     if (user.isSignedIn){
-      router.push('/schedule')
+      // router.push('/schedule')
     }
 
 
@@ -60,7 +60,7 @@ const Home: NextPage = () => {
         </div>
       </div>
 
-      <Image width={900} src={homeImage} alt="home image"/>
+      <Image width={900} className={styles.home_image} src={homeImage} alt="home image"/>
     </div>
   );
 };
